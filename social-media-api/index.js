@@ -3,12 +3,20 @@ const cors = require('cors')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
 require('dotenv').config()
+const authRoutes = require('./routes/auth')
 
 const app = express()
 
 app.use(express.json())
 app.use(morgan('dev'))
 app.use(cors())
+
+app.use('/auth', authRoutes)
+
+app.use((err, req, res ,next) => {
+    console.log(err)
+    res.status(err.statusCode || 500).json({message: err.message})
+})
 
 mongoose.connect(process.env.DB_URL).then(() => {
     app.listen(process.env.PORT)

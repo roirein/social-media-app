@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const HttpError = require('../utils/classes/http-error')
-const {sendConfirmationEmail} = require('../services/emails/mails/emails')
+const {sendConfirmationEmail, sendResetPasswordLink} = require('../services/emails/mails/emails')
+const { validateToken } = require('../utils/authUtils')
 
 const registerUser = async (req, res, next) => {
     try {
@@ -69,21 +70,60 @@ const loginUser = async (req, res, next) => {
 const activateAccount = async (req, res, next) => {
     try {
         const token = await Token.findOne({token: req.params.token})
-        if (!token || !token.token) {
-            throw new HttpError('token not exists', 404)
-        }
-        if (!token.user) {
-            throw new HttpError('no user attached to that token', 404)
-        }
-        if (token.expiresIn.getTime() < new Date().getTime()) {
-            throw new HttpError('token expired', 400)
-        }
+        await validateToken(token)
         const user = await User.findOne({_id: token.user})
         user.isActive = true
         await user.save()
-        await Token.findOneAndDelete({token: token.token})
         res.status(200).json({message: 'account activated successfully'})
     } catch(err) {
+        next(err)
+    }
+}
+
+const resetPassword = async (req, res, next) => {
+    try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            throw new HttpError(errors.array()[0].msg, 400)
+        }
+        const user = await User.findByEmail(req.body.email)
+        const token = new Token({
+            token: crypto.randomBytes(16).toString('hex'),
+            expiresIn: new Date(new Date().getTime() + 60*60*1000),
+            user: user._id
+        })
+        await token.save()
+        sendResetPasswordLink(req.body.email, token.token)
+        res.status(200).json({messgae: 'a link for reset your password sent to your email'})
+    } catch(err) {
+        next(err)
+    }
+}
+
+const verifyPasswordToken = async (req, res, next) => {
+    try {
+        const token = await Token.findOne({token: req.params.token})
+        await validateToken(token)
+        await Token.findOneAndDelete({token: token.token})
+        res.status(200).json({message: 'token verified successfully'})
+    } catch (err) {
+        next(err)
+    }
+}
+
+const changePassword = async (req, res, next) => {
+    try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            throw new HttpError(errors.array()[0].msg, 400)
+        }
+        await Token.findOne({token: req.params.token})
+        await Token.findOneAndDelete({token: req.params.token})
+        const user = await User.findByEmail(req.body.email)
+        user.password = req.body.password
+        await user.save()
+        res.status(200).json({message: 'password changed successfully'})
+    } catch (err) {
         next(err)
     }
 }
@@ -92,5 +132,8 @@ const activateAccount = async (req, res, next) => {
 module.exports = {
     registerUser,
     loginUser,
-    activateAccount
+    activateAccount,
+    resetPassword,
+    verifyPasswordToken,
+    changePassword
 }

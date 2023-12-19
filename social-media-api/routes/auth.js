@@ -58,4 +58,29 @@ router.post('/login', [
 
 router.get('/activate-account/:token', authController.activateAccount)
 
+router.post('/reset-password', [
+    body('email').isEmail().withMessage('Invalid email address').custom(async (value) => {
+        const isEmailExists = await User.findByEmail(value)
+        if (!isEmailExists){
+            throw new Error('email is not exists')
+        }
+        return true
+    })
+], authController.resetPassword)
+
+router.get('/verify-password-token/:token', authController.verifyPasswordToken)
+
+router.post('/change-password', [
+    body('email')
+    .trim().
+    isEmail().
+    withMessage('invalid email address'),
+    body('password')
+    .trim()
+    .isLength({min: 6, max: 24})
+    .withMessage('password must be at least 6 characters and no more than 24 characters')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,24}$/)
+    .withMessage('Password must include uppercase letters, lowercase letters, numbers, and special characters')
+], authController.changePassword)
+
 module.exports = router

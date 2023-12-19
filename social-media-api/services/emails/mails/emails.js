@@ -9,6 +9,16 @@ const sendConfirmationEmail = (email, token) => {
     })
 }
 
+const sendResetPasswordLink = (email, token) => {
+    mailer.sendMail({
+        from: 'no-reply@test.com',
+        to: email,
+        subject: 'reset password',
+        html: `<p>to reset your password please click this <a href="${token}">link</a></p` //href will be replaced by the client address when client side will be ready
+    })
+}
+
 module.exports = {
-    sendConfirmationEmail
+    sendConfirmationEmail,
+    sendResetPasswordLink
 }

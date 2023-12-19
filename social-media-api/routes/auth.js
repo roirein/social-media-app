@@ -43,4 +43,17 @@ router.post('/register', [
     })
 ], authController.registerUser)
 
+router.post('/login', [
+    body('email')
+    .trim().
+    isEmail().
+    withMessage('invalid email address'),
+    body('password')
+    .trim()
+    .isLength({min: 6, max: 24})
+    .withMessage('password must be at least 6 characters and no more than 24 characters')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,24}$/)
+    .withMessage('Password must include uppercase letters, lowercase letters, numbers, and special characters')
+], authController.loginUser)
+
 module.exports = router

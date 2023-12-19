@@ -22,7 +22,7 @@ const registerUser = async (req, res, next) => {
         })
         const token = new Token({
             token: confirmationToken,
-            expiresIn: new Date(new Date().getTime() + 60*60*1000),
+            expiresIn: new Date(new Date().getTime() + 60*1000),
             user: user._id
         })
         sendConfirmationEmail(email, confirmationToken)
@@ -48,6 +48,9 @@ const loginUser = async (req, res, next) => {
         if (!isEqual) {
             throw new HttpError('username or password are incorrect', 401)
         }
+        if (!user.isActive) {
+            throw new HttpError('please activate your account by clicking on the confirmation link in your email', 401)
+        }
         const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
         const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '4h'})
         user.refreshToken = refreshToken
@@ -63,7 +66,31 @@ const loginUser = async (req, res, next) => {
 }
 
 
+const activateAccount = async (req, res, next) => {
+    try {
+        const token = await Token.findOne({token: req.params.token})
+        if (!token || !token.token) {
+            throw new HttpError('token not exists', 404)
+        }
+        if (!token.user) {
+            throw new HttpError('no user attached to that token', 404)
+        }
+        if (token.expiresIn.getTime() < new Date().getTime()) {
+            throw new HttpError('token expired', 400)
+        }
+        const user = await User.findOne({_id: token.user})
+        user.isActive = true
+        await user.save()
+        await Token.findOneAndDelete({token: token.token})
+        res.status(200).json({message: 'account activated successfully'})
+    } catch(err) {
+        next(err)
+    }
+}
+
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    activateAccount
 }

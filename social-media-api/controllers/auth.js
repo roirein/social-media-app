@@ -1,8 +1,11 @@
 const User = require('../models/user')
+const Token = require('../models/tokens')
 const {validationResult} = require('express-validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 const HttpError = require('../utils/classes/http-error')
+const {sendConfirmationEmail} = require('../services/emails/mails/emails')
 
 const registerUser = async (req, res, next) => {
     try {
@@ -11,12 +14,20 @@ const registerUser = async (req, res, next) => {
             throw new HttpError(errors.array()[0].msg, 400)
         }
         const {username, password, email} = req.body
+        const confirmationToken = crypto.randomBytes(16).toString('hex')
         const user = new User({
             username,
             email,
             password
         })
+        const token = new Token({
+            token: confirmationToken,
+            expiresIn: new Date(new Date().getTime() + 60*60*1000),
+            user: user._id
+        })
+        sendConfirmationEmail(email, confirmationToken)
         await user.save()
+        await token.save()
         res.status(201).json({user})
     } catch(err) {
         next(err)
@@ -50,6 +61,7 @@ const loginUser = async (req, res, next) => {
         next(err)
     }
 }
+
 
 module.exports = {
     registerUser,

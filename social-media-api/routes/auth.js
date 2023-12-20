@@ -2,6 +2,7 @@ const express = require('express')
 const {body, param} = require('express-validator')
 const User = require('../models/user')
 const authController = require('../controllers/auth')
+const isAuth = require('../middlewares/auth')
 
 const router = express.Router()
 
@@ -82,5 +83,9 @@ router.post('/change-password', [
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,24}$/)
     .withMessage('Password must include uppercase letters, lowercase letters, numbers, and special characters')
 ], authController.changePassword)
+
+router.post('/logout', isAuth, authController.logout)
+
+router.post('/renew-token', authController.generateNewAccessToken)
 
 module.exports = router

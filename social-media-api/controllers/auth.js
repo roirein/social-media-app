@@ -52,14 +52,14 @@ const loginUser = async (req, res, next) => {
         if (!user.isActive) {
             throw new HttpError('please activate your account by clicking on the confirmation link in your email', 401)
         }
-        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
+        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
         const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '4h'})
-        user.refreshToken = refreshToken
-        await user.save()
+        const maxAge = req.body.rememberMe ? 365 * 24 * 60 * 60 : 4 * 60 * 60
+        res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Max-Age=${maxAge};`)
         res.status(200).json({
             username: user.username,
             email: user.email,
-            accessToken
+            accessToken,
         })
     } catch(err) {
         next(err)
@@ -128,6 +128,35 @@ const changePassword = async (req, res, next) => {
     }
 }
 
+const logout = async (req, res, next) => {
+    try {
+        res.setHeader('Set-Cookie', `refreshToken=''; HttpOnly; Max-Age=${new Date(0)}`)
+        res.status(200).json({message: 'logged out successfully'})
+    } catch(err) {
+        next(err)
+    }
+}
+
+const generateNewAccessToken = async (req, res, next) => {
+    try {
+        const refreshToken = req.cookies['refreshToken']
+        jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET, (err, decodedToken) => {
+            if (err) {
+                res.setHeader('Set-Cookie', `refreshToken=''; HttpOnly; Max-Age=${new Date(0)}`)
+                if (err.name === 'TokenExpiredError') {
+                    throw new HttpError('token expired', 401)
+                } else {
+                    throw new HttpError('invalid token', 401)
+                }
+            }
+            const accessToken = jwt.sign({_id: decodedToken._id, email: decodedToken.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
+            res.status(200).json({accessToken})
+        })
+    } catch (err) {
+        next(err)
+    }
+}
+
 
 module.exports = {
     registerUser,
@@ -135,5 +164,7 @@ module.exports = {
     activateAccount,
     resetPassword,
     verifyPasswordToken,
-    changePassword
+    changePassword,
+    logout,
+    generateNewAccessToken
 }

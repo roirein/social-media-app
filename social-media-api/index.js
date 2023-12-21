@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 require('dotenv').config()
 const authRoutes = require('./routes/auth')
+const profileRoutes = require('./routes/profile')
 
 const app = express()
 
@@ -14,6 +15,7 @@ app.use(morgan('dev'))
 app.use(cors())
 
 app.use('/auth', authRoutes)
+app.use('/profile', profileRoutes)
 
 app.use((err, req, res ,next) => {
     console.log(err)

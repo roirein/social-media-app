@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const Token = require('../models/tokens')
+const Profile = require('../models/profile')
 const {validationResult} = require('express-validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
@@ -26,9 +27,13 @@ const registerUser = async (req, res, next) => {
             expiresIn: new Date(new Date().getTime() + 60*1000),
             user: user._id
         })
+        const profile = new Profile({
+            userId: user._id
+        })
         sendConfirmationEmail(email, confirmationToken)
         await user.save()
         await token.save()
+        await profile.save()
         res.status(201).json({user})
     } catch(err) {
         next(err)
@@ -52,7 +57,7 @@ const loginUser = async (req, res, next) => {
         if (!user.isActive) {
             throw new HttpError('please activate your account by clicking on the confirmation link in your email', 401)
         }
-        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
+        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
         const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '4h'})
         const maxAge = req.body.rememberMe ? 365 * 24 * 60 * 60 : 4 * 60 * 60
         res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Max-Age=${maxAge};`)

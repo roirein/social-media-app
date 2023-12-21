@@ -21,10 +21,6 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    joined: {
-        type: Date,
-        default: new Date()
-    },
     refreshToken: {
         type: String
     }

@@ -1,4 +1,6 @@
 const express = require('express')
+const http = require('http')
+const socketioHelper = require('./services/socket/socket')
 const cors = require('cors')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
@@ -22,6 +24,10 @@ app.use((err, req, res ,next) => {
     res.status(err.statusCode || 500).json({message: err.message})
 })
 
+const server = http.createServer(app)
+socketioHelper.init(server)
+
+
 mongoose.connect(process.env.DB_URL).then(() => {
-    app.listen(process.env.PORT)
+    server.listen(process.env.PORT)
 }).catch(err => console.log(err))

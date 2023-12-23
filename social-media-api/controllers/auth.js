@@ -62,6 +62,7 @@ const loginUser = async (req, res, next) => {
         const maxAge = req.body.rememberMe ? 365 * 24 * 60 * 60 : 4 * 60 * 60
         res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Max-Age=${maxAge};`)
         res.status(200).json({
+            id: user._id,
             username: user.username,
             email: user.email,
             accessToken,

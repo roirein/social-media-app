@@ -1,14 +1,16 @@
+const Notification = require('../models/notification')
 const Profile = require('../models/profile')
+const Relation = require('../models/relation')
 const User = require('../models/user')
+const socketioHelper = require('../services/socket/socket')
 const HttpError = require('../utils/classes/http-error')
 const { deleteImage } = require('../utils/profileUtils')
 const {validationResult} = require('express-validator')
 
 const uploadProfileImage = async (req, res, next) => {
     try {
-        const profile = await Profile.findByUserId(req.userId)
+        const profile = await Profile.findByUserId(req.user._id)
         const imageType = req.params.imageType
-        console.log(req.file)
         const fieldName = imageType === 'profile' ? 'profileImageUrl' : 'coverImageUrl'
         if (profile[fieldName]) {
             deleteImage(profile[fieldName])
@@ -27,7 +29,10 @@ const updateProfile = async (req, res, next) => {
         if (!errors.isEmpty()) {
             throw new HttpError('one or more inputs are invalid', 400)
         }
-        const profile = await Profile.findByUserId(req.userId)
+        if (req.userId !== req.params.userId) {
+            throw new HttpError('you cannot edit someone else profile', 403)
+        }
+        const profile = await Profile.findByUserId(req.user._id)
         if (!profile) {
             throw new HttpError('profile not found', 404)
         }
@@ -45,20 +50,51 @@ const updateProfile = async (req, res, next) => {
 
 const getProfile = async (req, res, next) => {
     try {
-        if (req.userId !== req.params.userId) {
-            throw new HttpError('you cannot edit someone else profile', 403)
-        }
         const profile = await Profile.findByUserId(req.params.userId)
         if (!profile) {
             throw new HttpError('profile not found', 404) 
         }
-        const user = await User.findById(req.userId, 'username')
+        const user = await User.findById(req.user._id, 'username')
+        const followingAmount = await Relation.find({following: req.params,userId}).countDocuments();
+        const followersAmount = await Relation.find({follower: req.params.userId}).countDocuments();
         res.status(200).json({
             profile: {
                 ...profile.toObject(),
-                username: user.username
+                username: user.username,
+                followingAmount,
+                followersAmount
             }
         })
+    } catch(err) {
+        next(err)
+    }
+}
+
+const followUser = async (req, res, next) => {
+    try {
+        const isRelationExist = await Relation.findOne({follower: req.userId, following: req.body.following})
+        if (isRelationExist) {
+            throw new HttpError('you already follow that user', 409)
+        }
+        if (req.user._id === req.body.following) {
+            throw new HttpError('you cannot follow yourself', 400)
+        }
+        const relation = new Relation({
+            follower: req.user._id,
+            following: req.body.following
+        })
+        const notification = new Notification({
+            recipient: req.body.following,
+            message: `${req.user.username} started following you`,
+            trigger: 'new-follower'
+        })
+        await notification.save()
+        const io = socketioHelper.getIo()
+        if (io) {
+            io.to(req.body.following).emit('new-follower', notification)
+        }
+        await relation.save()
+        res.status(201).json({message: 'followed successfully'})
     } catch(err) {
         next(err)
     }
@@ -67,5 +103,6 @@ const getProfile = async (req, res, next) => {
 module.exports = {
     uploadProfileImage,
     updateProfile,
-    getProfile
+    getProfile,
+    followUser
 }

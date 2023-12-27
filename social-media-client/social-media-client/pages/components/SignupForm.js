@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import {Button, Stack, TextField, Typography} from '@mui/material'
 import { AccountCircle, Email, Lock } from '@mui/icons-material'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from 'axios'
+import TextInput from '@/components/UI/forms-input/TextInput'
+import PasswordInput from '@/components/UI/forms-input/PasswordInput'
 
 //add-hide/show password functionality
 //add server errors handling
@@ -32,7 +34,7 @@ const validationSchema = yup.object({
 
 const SignupForm = () => {
 
-    const {formState: {errors}, handleSubmit, control, clearErrors} = useForm({
+    const methods = useForm({
         resolver: yupResolver(validationSchema)
     })
 
@@ -40,10 +42,10 @@ const SignupForm = () => {
 
     const onSubmit = async (data) => {  
         try {
-            console.log(process.env)
             const response = await axios.post(`${process.env.server_url}/auth/register`, {
                 ...data
             })
+            console.log(response)
             if (response.status === 201) {
                 setSubmitted(true)
             }
@@ -66,10 +68,11 @@ const SignupForm = () => {
     }
 
     return (
-        <form  onSubmit={handleSubmit(onSubmit)} style={{
-            margin: '0 auto',
-            width: '30%'
-        }}>
+        <FormProvider {...methods}>
+            <form  onSubmit={methods.handleSubmit(onSubmit)} style={{
+                margin: '0 auto',
+                width: '30%'
+            }}>
             <Stack
                 direction="column"
                 rowGap="24px"
@@ -77,81 +80,36 @@ const SignupForm = () => {
                 <Typography variant="h3" textAlign="center" sx={{mb: '16px'}}>
                     Signup
                 </Typography>
-                <Controller
+                <TextInput
                     name="username"
-                    control={control}
-                    render={({field}) => (
-                        <TextField
-                            {...field}
-                            label="username"
-                            variant="outlined"
-                            InputProps={{
-                                startAdornment: <AccountCircle fontSize="large"/>
-                            }}
-                            error={!!errors.username}
-                            helperText={errors.username ? errors.username.message : ''}
-                            onBlur={() => clearErrors('username')}
-                        />
-                    )}
+                    label="username"
+                    type="text"
+                    inputProps={{
+                        startAdornment: <AccountCircle fontSize="large"/>
+                    }}
                 />
-                <Controller
+                <TextInput
                     name="email"
-                    control={control}
-                    render={({field}) => (
-                        <TextField
-                            {...field}
-                            label="email"
-                            variant="outlined"
-                            InputProps={{
-                                startAdornment: <Email fontSize="large"/>
-                            }}
-                            error={!!errors.email}
-                            helperText={errors.email ? errors.email.message : ''}
-                            onBlur={() => clearErrors('email')}
-                        />
-                    )}
+                    label="email"
+                    type="email"
+                    inputProps={{
+                        startAdornment: <Email fontSize="large"/>
+                    }}
                 />
-                <Controller
+                <PasswordInput
                     name="password"
-                    control={control}
-                    render={({field}) => (
-                        <TextField
-                            {...field}
-                            label="password"
-                            variant="outlined"
-                            InputProps={{
-                                startAdornment: <Lock fontSize="large"/>
-                            }}
-                            type="password"
-                            error={!!errors.password}
-                            helperText={errors.password ? errors.password.message : ''}
-                            onBlur={() => clearErrors('password')}
-                        />
-                    )}
+                    label="password"
                 />
-                <Controller
+                <PasswordInput
                     name="confirmPassword"
-                    control={control}
-                    render={({field}) => (
-                        <TextField
-                            {...field}
-                            label="confirm password"
-                            variant="outlined"
-                            InputProps={{
-                                startAdornment: <Lock fontSize="large"/>
-                            }}
-                            type="password"
-                            error={!!errors.confirmPassword}
-                            helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
-                            onBlur={() => clearErrors('confirmPassword')}
-                        />
-                    )}
+                    label="confirm password"
                 />
                 <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto'}}>
                     Signup
                 </Button>
             </Stack>
         </form>
+        </FormProvider>
     )
 }
 

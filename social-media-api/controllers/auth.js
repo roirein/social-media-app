@@ -13,6 +13,9 @@ const registerUser = async (req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
+            if (errors.array()[0].path === 'username' || errors.array()[0].path === 'email') {
+                throw new HttpError(errors.array()[0].msg, 409)
+            }
             throw new HttpError(errors.array()[0].msg, 400)
         }
         const {username, password, email} = req.body
@@ -72,7 +75,7 @@ const loginUser = async (req, res, next) => {
     }
 }
 
-
+// add token deletion 
 const activateAccount = async (req, res, next) => {
     try {
         const token = await Token.findOne({token: req.params.token})
@@ -80,7 +83,7 @@ const activateAccount = async (req, res, next) => {
         const user = await User.findOne({_id: token.user})
         user.isActive = true
         await user.save()
-        res.status(200).json({message: 'account activated successfully'})
+        res.redirect(process.env.CLIENT_URL)
     } catch(err) {
         next(err)
     }
@@ -110,8 +113,8 @@ const verifyPasswordToken = async (req, res, next) => {
     try {
         const token = await Token.findOne({token: req.params.token})
         await validateToken(token)
-        await Token.findOneAndDelete({token: token.token})
-        res.status(200).json({message: 'token verified successfully'})
+        const user = await User.findById(token.user)
+        res.redirect(`${process.env.CLIENT_URL}?token=${token.token}&email=${encodeURIComponent(user.email)}`)
     } catch (err) {
         next(err)
     }

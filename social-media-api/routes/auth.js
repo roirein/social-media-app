@@ -71,7 +71,7 @@ router.post('/reset-password', [
 
 router.get('/verify-password-token/:token', authController.verifyPasswordToken)
 
-router.post('/change-password', [
+router.post('/change-password/:token', [
     body('email')
     .trim().
     isEmail().

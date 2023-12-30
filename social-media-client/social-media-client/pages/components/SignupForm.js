@@ -8,9 +8,6 @@ import axios from 'axios'
 import TextInput from '@/components/UI/forms-input/TextInput'
 import PasswordInput from '@/components/UI/forms-input/PasswordInput'
 
-//add-hide/show password functionality
-//add server errors handling
-
 const validationSchema = yup.object({
     username: yup
             .string()
@@ -32,25 +29,25 @@ const validationSchema = yup.object({
             .oneOf([yup.ref('password'), null], 'passwords must match')
 })
 
-const SignupForm = () => {
+const SignupForm = (props) => {
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
     })
 
-    const [submitted, setSubmitted] = useState(false)
+    const [submitted, setSubmitted] = useState(false);
+    const [serverError, setServerError] = useState('')
 
     const onSubmit = async (data) => {  
         try {
             const response = await axios.post(`${process.env.server_url}/auth/register`, {
                 ...data
             })
-            console.log(response)
             if (response.status === 201) {
                 setSubmitted(true)
             }
         } catch(e) {
-            console.log(e)
+            setServerError(e.response.data.message)
         }
     }
 
@@ -72,43 +69,58 @@ const SignupForm = () => {
             <form  onSubmit={methods.handleSubmit(onSubmit)} style={{
                 margin: '0 auto',
                 width: '30%'
-            }}>
-            <Stack
-                direction="column"
-                rowGap="24px"
-            >
-                <Typography variant="h3" textAlign="center" sx={{mb: '16px'}}>
-                    Signup
-                </Typography>
-                <TextInput
-                    name="username"
-                    label="username"
-                    type="text"
-                    inputProps={{
-                        startAdornment: <AccountCircle fontSize="large"/>
-                    }}
-                />
-                <TextInput
-                    name="email"
-                    label="email"
-                    type="email"
-                    inputProps={{
-                        startAdornment: <Email fontSize="large"/>
-                    }}
-                />
-                <PasswordInput
-                    name="password"
-                    label="password"
-                />
-                <PasswordInput
-                    name="confirmPassword"
-                    label="confirm password"
-                />
-                <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto'}}>
-                    Signup
-                </Button>
-            </Stack>
-        </form>
+            }} onBlur={() => setServerError(null)}>
+                <Stack
+                    direction="column"
+                    rowGap="24px"
+                >
+                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}}>
+                        Signup
+                    </Typography>
+                    <TextInput
+                        name="username"
+                        label="username"
+                        type="text"
+                        inputProps={{
+                            startAdornment: <AccountCircle fontSize="large"/>
+                        }}
+                    />
+                    <TextInput
+                        name="email"
+                        label="email"
+                        type="email"
+                        inputProps={{
+                            startAdornment: <Email fontSize="large"/>
+                        }}
+                    />
+                    <PasswordInput
+                        name="password"
+                        label="password"
+                    />
+                    <PasswordInput
+                        name="confirmPassword"
+                        label="confirm password"
+                    />
+                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto'}}>
+                        Signup
+                    </Button>
+                    {serverError && (
+                        <Typography color="red" textAlign="center">
+                            {serverError}
+                        </Typography>
+                    )}
+                    <Typography textAlign="center" sx={{
+                        cursor: 'pointer',
+                        '&:hover': {
+                            color: 'blue',
+                            textDecoratin: 'underline',
+                            fontWeight: 'bold'
+                        }
+                    }} onClick={props.onSwitchLogin}>
+                        Already have an account? click here to signin
+                    </Typography>
+                </Stack>
+            </form>
         </FormProvider>
     )
 }

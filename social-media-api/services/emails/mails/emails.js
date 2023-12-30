@@ -5,7 +5,7 @@ const sendConfirmationEmail = (email, token) => {
         from: 'no-reply@test.com',
         to: email,
         subject: 'Activate your account',
-        html: `<p>please activate your account by click this <a href="${token}">link</a></p` //href will be replaced by the client address when client side will be ready
+        html: `<p>please activate your account by click this <a href="http://localhost:3001/auth/activate-account/${token}">link</a></p` //href will be replaced by the client address when client side will be ready
     })
 }
 
@@ -14,7 +14,7 @@ const sendResetPasswordLink = (email, token) => {
         from: 'no-reply@test.com',
         to: email,
         subject: 'reset password',
-        html: `<p>to reset your password please click this <a href="${token}">link</a></p` //href will be replaced by the client address when client side will be ready
+        html: `<p>to reset your password please click this <a href="http://localhost:3001/auth/verify-password-token/${token}">link</a></p` //href will be replaced by the client address when client side will be ready
     })
 }
 

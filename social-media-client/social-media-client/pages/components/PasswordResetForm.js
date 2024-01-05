@@ -1,7 +1,7 @@
 import PasswordInput from "@/components/UI/forms-input/PasswordInput";
 import TextInput from "@/components/UI/forms-input/TextInput";
 import { Email } from "@mui/icons-material";
-import { Button, FormControlLabel, Stack, Typography, Checkbox } from "@mui/material";
+import { Button, FormControlLabel, Stack, Typography, Checkbox, useTheme} from "@mui/material";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from 'yup'
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -22,6 +22,8 @@ const PasswordResetForm = (props) => {
     const methods = useForm({
         resolver: yupResolver(validationSchema)
     });
+
+    const theme = useTheme()
 
     const [serverError, setServerError] = useState(null);
     const [isSubmitted, setIsSubmitted] = useState(false)
@@ -55,7 +57,8 @@ const PasswordResetForm = (props) => {
             <form
                 style={{
                     margin: '0 auto',
-                    width: '30%'
+                    width: '80%',
+                    padding: '16px'
                 }}
                 onSubmit={methods.handleSubmit(onSubmit)}
                 onBlur={() => setServerError(null)}
@@ -64,7 +67,7 @@ const PasswordResetForm = (props) => {
                     direction="column"
                     rowGap="24px"
                 >
-                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}}>
+                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}} color={theme.palette.primary.light}>
                         Reset Password
                     </Typography>
                     <TextInput
@@ -75,9 +78,25 @@ const PasswordResetForm = (props) => {
                             startAdornment: <Email fontSize="large"/>
                         }}
                     />
-                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto'}}>
+                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
                         Reset Password
                     </Button>
+                    <Typography 
+                        variant="caption"
+                        fontSize="18px"
+                        textAlign="center"
+                        sx={{
+                            cursor: 'pointer',
+                            '&:hover': {
+                                color: theme.palette.primary.light,
+                                textDecoration: 'underline',
+                                fontWeight: 'bold'
+                            },
+                        }}
+                        onClick={props.onSwitchLogin}
+                    >
+                        Back To Login
+                    </Typography>
                     {serverError && (
                         <Typography color="red" textAlign="center">
                             {serverError}

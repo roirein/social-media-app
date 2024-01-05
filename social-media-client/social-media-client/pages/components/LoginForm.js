@@ -1,7 +1,7 @@
 import PasswordInput from "@/components/UI/forms-input/PasswordInput";
 import TextInput from "@/components/UI/forms-input/TextInput";
 import { Email } from "@mui/icons-material";
-import { Button, FormControlLabel, Stack, Typography, Checkbox } from "@mui/material";
+import { Button, FormControlLabel, Stack, Typography, Checkbox, useTheme } from "@mui/material";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as yup from 'yup'
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -24,6 +24,8 @@ const validationSchema = yup.object({
 
 
 const LoginForm = (props) => {
+
+    const theme = useTheme()
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)
@@ -54,7 +56,8 @@ const LoginForm = (props) => {
             <form
                 style={{
                     margin: '0 auto',
-                    width: '30%'
+                    width: '80%',
+                    padding: '16px'
                 }}
                 onSubmit={methods.handleSubmit(onSubmit)}
                 onBlur={() => setServerError(null)}
@@ -63,8 +66,8 @@ const LoginForm = (props) => {
                     direction="column"
                     rowGap="24px"
                 >
-                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}}>
-                        Signin
+                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}} color={theme.palette.primary.light}>
+                        Sign in
                     </Typography>
                     <TextInput
                         name="email"
@@ -74,58 +77,57 @@ const LoginForm = (props) => {
                             startAdornment: <Email fontSize="large"/>
                         }}
                     />
-                    <Stack>
-                        <PasswordInput
-                            name="password"
-                            label="password"
-                        />
-                        <Typography 
-                            variant="caption"
-                            sx={{
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    color: 'blue',
-                                    textDecoratin: 'underline',
-                                    fontWeight: 'bold'
-                                },
-                            }}
-                            onClick={props.onForgotPassword}
-                        >
-                            Forgot Password?
-                        </Typography>
-                    </Stack>
-                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto'}}>
+                    <PasswordInput
+                        name="password"
+                        label="password"
+                    />
+                    <FormControlLabel control={<Checkbox 
+                                    onChange={() => setRememberMe((prev) => !prev)} 
+                                    value={rememberMe}
+                                    sx={{
+                                        '&.Mui-checked': {
+                                          color: theme.palette.primary.light, // This is the color when the checkbox is checked
+                                        },
+                                    }}
+                                />} 
+                        label={<span style={{ fontSize: '16px' }}>Remember me</span>}  
+                    />
+                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
                         Sign in
                     </Button>
-                    {serverError && (
-                        <Typography color="red" textAlign="center">
-                            {serverError}
-                        </Typography>
-                    )}
-                    <Stack
-                        direction="row"
-                        justifyContent="space-between"
-                        alignItems="baseline"
-                    >
-                        <FormControlLabel control={<Checkbox 
-                                                        onChange={() => setRememberMe((prev) => !prev)} 
-                                                        value={rememberMe}
-                                                    />} 
-                                            label={<span style={{ fontSize: '12px' }}>Remember me</span>}  
-                        />
-                        <Typography textAlign="center" sx={{
+                    <Typography textAlign="center" sx={{
                             cursor: 'pointer',
                             '&:hover': {
-                                color: 'blue',
-                                textDecoratin: 'underline',
+                                color: theme.palette.primary.light,
+                                textDecoration: 'underline',
                                 fontWeight: 'bold'
                             },
                             position: 'relative',
                             bottom: '8px'
                         }} onClick={props.onSwitchSignup} variant="caption">
                             Don't have an account yet? click here for creating one
+                    </Typography>
+                    <Typography 
+                        variant="caption"
+                        fontSize="18px"
+                        textAlign="center"
+                        sx={{
+                            cursor: 'pointer',
+                            '&:hover': {
+                                color: theme.palette.primary.light,
+                                textDecoration: 'underline',
+                                fontWeight: 'bold'
+                            },
+                        }}
+                        onClick={props.onForgotPassword}
+                    >
+                        Forgot Password?
+                    </Typography>
+                    {serverError && (
+                        <Typography color="red" textAlign="center">
+                            {serverError}
                         </Typography>
-                    </Stack>
+                    )}
                 </Stack>
             </form>
         </FormProvider>

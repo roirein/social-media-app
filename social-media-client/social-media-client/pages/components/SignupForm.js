@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {Button, Stack, TextField, Typography} from '@mui/material'
+import {Button, Stack, TextField, Typography, useTheme} from '@mui/material'
 import { AccountCircle, Email, Lock } from '@mui/icons-material'
 import { useForm, FormProvider } from 'react-hook-form'
 import * as yup from 'yup'
@@ -35,6 +35,8 @@ const SignupForm = (props) => {
         resolver: yupResolver(validationSchema)
     })
 
+    const theme = useTheme()
+
     const [submitted, setSubmitted] = useState(false);
     const [serverError, setServerError] = useState('')
 
@@ -68,13 +70,14 @@ const SignupForm = (props) => {
         <FormProvider {...methods}>
             <form  onSubmit={methods.handleSubmit(onSubmit)} style={{
                 margin: '0 auto',
-                width: '30%'
+                width: '80%',
+                padding: '16px'
             }} onBlur={() => setServerError(null)}>
                 <Stack
                     direction="column"
                     rowGap="24px"
                 >
-                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}}>
+                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}} color={theme.palette.primary.light}>
                         Signup
                     </Typography>
                     <TextInput
@@ -101,7 +104,7 @@ const SignupForm = (props) => {
                         name="confirmPassword"
                         label="confirm password"
                     />
-                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto'}}>
+                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
                         Signup
                     </Button>
                     {serverError && (
@@ -112,8 +115,8 @@ const SignupForm = (props) => {
                     <Typography textAlign="center" sx={{
                         cursor: 'pointer',
                         '&:hover': {
-                            color: 'blue',
-                            textDecoratin: 'underline',
+                            color: theme.palette.primary.light,
+                            textDecoration: 'underline',
                             fontWeight: 'bold'
                         }
                     }} onClick={props.onSwitchLogin}>

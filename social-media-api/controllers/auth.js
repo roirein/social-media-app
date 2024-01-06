@@ -114,7 +114,7 @@ const verifyPasswordToken = async (req, res, next) => {
         const token = await Token.findOne({token: req.params.token})
         await validateToken(token)
         const user = await User.findById(token.user)
-        res.redirect(`${process.env.CLIENT_URL}?token=${token.token}&email=${encodeURIComponent(user.email)}`)
+        res.redirect(`${process.env.CLIENT_URL}/reset-password?token=${token.token}&email=${encodeURIComponent(user.email)}`)
     } catch (err) {
         next(err)
     }

@@ -21,7 +21,7 @@ const validationSchema = yup.object({
 })
 
 
-const ChangePasswordForm = (props) => {
+const ChangePasswordForm = () => {
 
     const methods = useForm({
         resolver: yupResolver(validationSchema)

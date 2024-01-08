@@ -1,8 +1,10 @@
+import AppTemplate from "@/components/application/app-template/app-template"
+
 const ProfilePage = () => {
     return (
-        <h1>
-            Profile
-        </h1>
+        <AppTemplate>
+            <h1>profile</h1>
+        </AppTemplate>
     )
 }
 

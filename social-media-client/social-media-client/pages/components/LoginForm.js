@@ -44,6 +44,7 @@ const LoginForm = (props) => {
             })
             if (response.status === 200) {
                 const userId = response.data.id
+                
                 router.push(`/profile/${userId}`)
             }
         } catch (e) {
@@ -108,20 +109,20 @@ const LoginForm = (props) => {
                             Don't have an account yet? click here for creating one
                     </Typography>
                     <Typography 
-                        variant="caption"
-                        fontSize="18px"
-                        textAlign="center"
-                        sx={{
-                            cursor: 'pointer',
-                            '&:hover': {
-                                color: theme.palette.primary.light,
-                                textDecoration: 'underline',
-                                fontWeight: 'bold'
-                            },
-                        }}
-                        onClick={props.onForgotPassword}
-                    >
-                        Forgot Password?
+                            variant="caption"
+                            fontSize="18px"
+                            textAlign="center"
+                            sx={{
+                                cursor: 'pointer',
+                                '&:hover': {
+                                    color: theme.palette.primary.light,
+                                    textDecoration: 'underline',
+                                    fontWeight: 'bold'
+                                },
+                            }}
+                            onClick={props.onForgotPassword}
+                        >
+                            Forgot Password?
                     </Typography>
                     {serverError && (
                         <Typography color="red" textAlign="center">

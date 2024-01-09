@@ -3,6 +3,12 @@ import { AppBar, useTheme, Stack, Avatar, TextField } from "@mui/material"
 import Image from "next/image"
 import logo from "../../../public/logo.png"
 
+// next tasks:
+//set up redux store - done
+//finish the login flow - basically done, will be change during development
+//redesign the header
+//add to profile page cover and profile image
+
 const AppHeader = () => {
 
     const theme = useTheme()

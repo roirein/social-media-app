@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import axios from 'axios'
 import { useState } from "react";
 import {useRouter} from 'next/router'
+import userApi from "@/store/user/user-api";
 
 const validationSchema = yup.object({
     email: yup
@@ -37,19 +38,8 @@ const LoginForm = (props) => {
     const router = useRouter();
 
     const onSubmit = async (data) => {
-        try {
-            const response = await axios.post(`${process.env.server_url}/auth/login`, {
-                ...data,
-                rememberMe: rememberMe
-            })
-            if (response.status === 200) {
-                const userId = response.data.id
-                
-                router.push(`/profile/${userId}`)
-            }
-        } catch (e) {
-            setServerError(e.response.data.message)
-        }
+        const userId = await userApi.login(data.email, data.password)
+        router.push(`/profile/${userId}`)
     }
 
     return (

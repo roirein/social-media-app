@@ -1,17 +1,18 @@
 import { AccountCircle, Mail, Notifications, Search } from "@mui/icons-material"
-import { AppBar, useTheme, Stack, Avatar, TextField } from "@mui/material"
+import { AppBar, useTheme, Stack, Avatar, TextField, Typography } from "@mui/material"
 import Image from "next/image"
 import logo from "../../../public/logo.png"
+import { useSelector } from "react-redux"
+import userApi from "@/store/user/user-api"
 
 // next tasks:
-//set up redux store - done
-//finish the login flow - basically done, will be change during development
-//redesign the header
+//redesign the header(include add dropdown with navigation to setting page and logout)
 //add to profile page cover and profile image
 
 const AppHeader = () => {
 
     const theme = useTheme()
+    const username = useSelector(state => userApi.getUsername(state))
 
     return (
         <AppBar
@@ -33,15 +34,19 @@ const AppHeader = () => {
                         px: theme.spacing(5)
                     }}
                 >
-                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
-                        <AccountCircle fontSize="large" sx={{color: theme.palette.secondary.light}}/>
-                    </Avatar>
-                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
-                        <Notifications sx={{color: theme.palette.secondary.light}}/>
-                    </Avatar>
-                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
-                        <Mail sx={{color: theme.palette.secondary.light}}/>
-                    </Avatar>
+                    <Stack
+                        direction="row"
+                        columnGap={theme.spacing(4)}
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
+                            <AccountCircle fontSize="large" sx={{color: theme.palette.secondary.light}}/>
+                        </Avatar>
+                        <Typography color={theme.palette.primary.contrastText} fontWeight="bold">
+                            Hello, {username}
+                        </Typography>
+                    </Stack>
                 </Stack>
                 <Stack width="50%">
                     <TextField
@@ -68,6 +73,12 @@ const AppHeader = () => {
                     }}
                 >
                     <Image src={logo} width={40} height={40} style={{marginTop: '2px'}}/>
+                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
+                        <Notifications sx={{color: theme.palette.secondary.light}}/>
+                    </Avatar>
+                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
+                        <Mail sx={{color: theme.palette.secondary.light}}/>
+                    </Avatar> 
                 </Stack>
             </Stack>
         </AppBar>

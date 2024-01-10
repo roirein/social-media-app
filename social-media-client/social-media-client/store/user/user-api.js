@@ -1,6 +1,7 @@
 import BaseApi from '@/utils/base-api'
 import store from '../index'
 import userSlice from './user-slice'
+import {usernameSelector} from './user-selectors'
 
 class UserApi extends BaseApi {
 
@@ -23,6 +24,10 @@ class UserApi extends BaseApi {
         }
 
         return response.data.id
+    }
+
+    getUsername(state) {
+        return usernameSelector(state)
     }
 }
 

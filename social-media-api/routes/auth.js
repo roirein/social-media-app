@@ -88,4 +88,6 @@ router.post('/logout', isAuth, authController.logout)
 
 router.post('/renew-token', authController.generateNewAccessToken)
 
+router.get('/get-user', isAuth, authController.fecthUser)
+
 module.exports = router

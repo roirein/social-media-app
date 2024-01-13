@@ -3,7 +3,8 @@ const { createSlice } = require("@reduxjs/toolkit")
 const initialState = {
     userId: '',
     username: '',
-    token: ''
+    token: '',
+    errorMessage: ''
 }
 
 const userSlice = createSlice({
@@ -11,9 +12,13 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         loginSuccess: (state, action) => {
-            state.userId = action.payload.userId,
-            state.username = action.payload.username,
+            state.userId = action.payload.userId
+            state.username = action.payload.username
             state.token = action.payload.token
+            state.errorMessage = ''
+        },
+        loginFailure: (state, action) => {
+            state.errorMessage = action.payload.errMessage
         }
     }
 })

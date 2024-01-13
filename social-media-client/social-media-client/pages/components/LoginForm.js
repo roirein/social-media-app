@@ -9,6 +9,7 @@ import axios from 'axios'
 import { useState } from "react";
 import {useRouter} from 'next/router'
 import userApi from "@/store/user/user-api";
+import { useSelector } from "react-redux";
 
 const validationSchema = yup.object({
     email: yup
@@ -33,13 +34,18 @@ const LoginForm = (props) => {
     });
 
     const [rememberMe, setRememberMe] = useState(false);
-    const [serverError, setServerError] = useState(null);
+    const serverError = useSelector(state => userApi.getError(state))
+    const [showError, setShowError] = useState(false)
 
     const router = useRouter();
 
     const onSubmit = async (data) => {
-        const userId = await userApi.login(data.email, data.password)
-        router.push(`/profile/${userId}`)
+        try {
+            await userApi.login(data.email, data.password)
+            router.push('/feed')
+        } catch (e) {
+            setShowError(true)
+        }
     }
 
     return (
@@ -51,7 +57,7 @@ const LoginForm = (props) => {
                     padding: '16px'
                 }}
                 onSubmit={methods.handleSubmit(onSubmit)}
-                onBlur={() => setServerError(null)}
+                onBlur={() => setShowError(false)}
             >
                 <Stack
                     direction="column"
@@ -114,7 +120,7 @@ const LoginForm = (props) => {
                         >
                             Forgot Password?
                     </Typography>
-                    {serverError && (
+                    {serverError && showError && (
                         <Typography color="red" textAlign="center">
                             {serverError}
                         </Typography>

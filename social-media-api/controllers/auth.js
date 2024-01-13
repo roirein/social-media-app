@@ -60,10 +60,10 @@ const loginUser = async (req, res, next) => {
         if (!user.isActive) {
             throw new HttpError('please activate your account by clicking on the confirmation link in your email', 401)
         }
-        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
-        const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '4h'})
+        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
+        const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '5m'})
         const maxAge = req.body.rememberMe ? 365 * 24 * 60 * 60 : 4 * 60 * 60
-        res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Max-Age=${maxAge};`)
+        res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Max-Age=${maxAge}; Path=/; SameSite=None; Secure`)
         res.status(200).json({
             id: user._id,
             username: user.username,
@@ -166,6 +166,17 @@ const generateNewAccessToken = async (req, res, next) => {
     }
 }
 
+const fecthUser = async (req, res, next) => {
+    try {
+        const {username, _id} = req.user
+        res.status(200).json({
+            username, _id
+        })
+    } catch(e) {
+        next(e)
+    }
+}
+
 
 module.exports = {
     registerUser,
@@ -175,5 +186,6 @@ module.exports = {
     verifyPasswordToken,
     changePassword,
     logout,
-    generateNewAccessToken
+    generateNewAccessToken,
+    fecthUser
 }

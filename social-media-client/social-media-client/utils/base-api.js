@@ -16,7 +16,7 @@ class BaseApi {
                 if (e.response.data.message === 'token expired') {
                     const newTokenResponse = await this.getNewAccessToken()
                     if (newTokenResponse.status === 401) {
-                        throw new Error('session ended')
+                        throw e
                     }
                     localStorage.setItem('accessToken', newTokenResponse.data.accessToken)
                     return await this.sendRequest(method, requestPath, {...headers, Authorization: newTokenResponse.data.accessToken, data})

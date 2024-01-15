@@ -34,20 +34,25 @@ class UserApi extends BaseApi {
     }
 
     async getUser(token) {
-        const response = await this.makeApiRequest('auth/get-user', 'GET', null, {
-            Authorization: `Bearer ${token}`
-        })
-        if (response.status === 200) {
-            if (!this.getUsername()) {
-                store.dispatch(userSlice.actions.loginSuccess({
-                    userId: response.data._id,
-                    username: response.data.username,
-                    token: localStorage.getItem('accessToken')
-                }))
+        try {
+            const response = await this.makeApiRequest('auth/get-user', 'GET', null, {
+                Authorization: `Bearer ${token}`
+            })
+            if (response.status === 200) {
+                if (!this.getUsername()) {
+                    store.dispatch(userSlice.actions.loginSuccess({
+                        userId: response.data._id,
+                        username: response.data.username,
+                        token: localStorage.getItem('accessToken')
+                    }))
+                }
             }
-        } else {
-            if (response.status === 401) {
-                return 'session ended'
+        } catch(e) {
+            console.log(e)
+            if (e.response && e.response.status === 401) {
+                throw e
+            } else {
+                // will be taken care of
             }
         }
     }

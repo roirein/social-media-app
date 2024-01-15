@@ -1,9 +1,11 @@
 import { AccountCircle, Mail, Notifications, Search } from "@mui/icons-material"
 import { AppBar, useTheme, Stack, Avatar, TextField, Typography } from "@mui/material"
 import Image from "next/image"
-import logo from "../../../public/logo.png"
+import logo from "../../../../public/logo.png"
 import { useSelector } from "react-redux"
 import userApi from "@/store/user/user-api"
+import AppHeaderMenu from "./app-header-menu"
+import { useState } from "react"
 
 // next tasks:
 //redesign the header(include add dropdown with navigation to setting page and logout)
@@ -13,6 +15,15 @@ const AppHeader = () => {
 
     const theme = useTheme()
     const username = useSelector(state => userApi.getUsername(state))
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null)
+
+    const onOpenMenu = (e) => {
+        setMenuAnchorEl(e.currentTarget)
+    }
+
+    const onCloseMenu = (e) => {
+        setMenuAnchorEl(null)
+    }
 
     return (
         <AppBar
@@ -39,6 +50,10 @@ const AppHeader = () => {
                         columnGap={theme.spacing(4)}
                         alignItems="center"
                         justifyContent="center"
+                        sx={{
+                            cursor: 'pointer'
+                        }}
+                        onClick={onOpenMenu}
                     >
                         <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
                             <AccountCircle fontSize="large" sx={{color: theme.palette.secondary.light}}/>
@@ -47,6 +62,10 @@ const AppHeader = () => {
                             Hello, {username}
                         </Typography>
                     </Stack>
+                    <AppHeaderMenu
+                        anchorEl={menuAnchorEl}
+                        onClose={onCloseMenu}
+                    />
                 </Stack>
                 <Stack width="50%">
                     <TextField

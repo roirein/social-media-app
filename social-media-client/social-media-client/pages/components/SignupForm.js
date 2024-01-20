@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import axios from 'axios'
 import TextInput from '@/components/UI/forms-input/TextInput'
 import PasswordInput from '@/components/UI/forms-input/PasswordInput'
+import userApi from '@/store/user/user-api'
 
 const validationSchema = yup.object({
     username: yup
@@ -38,18 +39,15 @@ const SignupForm = (props) => {
     const theme = useTheme()
 
     const [submitted, setSubmitted] = useState(false);
-    const [serverError, setServerError] = useState('')
+    const serverError = useSelector(state => userApi.getError(state))
+    const [showError, setShowError] = useState(false)
 
     const onSubmit = async (data) => {  
         try {
-            const response = await axios.post(`${process.env.server_url}/auth/register`, {
-                ...data
-            })
-            if (response.status === 201) {
-                setSubmitted(true)
-            }
+            await userApi.register(data)
+            setSubmitted(true)
         } catch(e) {
-            setServerError(e.response.data.message)
+            setShowError(true)
         }
     }
 
@@ -107,7 +105,7 @@ const SignupForm = (props) => {
                     <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
                         Signup
                     </Button>
-                    {serverError && (
+                    {serverError && showError && (
                         <Typography color="red" textAlign="center">
                             {serverError}
                         </Typography>

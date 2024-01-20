@@ -12,9 +12,6 @@ import userApi from "@/store/user/user-api";
 import { useSelector } from "react-redux";
 
 //nex tasks:
-//1 - add popover to the header
-//2 - add logout functionality
-//3 - moving the register function into the user api
 //4 - start to work on the profile page, upload cover and image photoes
 //5 -add to profile page personal data(full name, location, work, birthday, bio, etc...)
 

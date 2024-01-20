@@ -19,7 +19,7 @@ class BaseApi {
                         throw e
                     }
                     localStorage.setItem('accessToken', newTokenResponse.data.accessToken)
-                    return await this.sendRequest(method, requestPath, {...headers, Authorization: newTokenResponse.data.accessToken, data})
+                    return await this.sendRequest(method, requestPath, {...headers, Authorization: `Bearer ${newTokenResponse.data.accessToken}`, data})
                 } else {
                     throw e
                 }

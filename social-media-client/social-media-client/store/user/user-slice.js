@@ -11,6 +11,11 @@ const userSlice = createSlice({
     name: 'user', 
     initialState,
     reducers: {
+        registerSuccess: (state) => {
+            if (state.errorMessage) {
+                state.errorMessage = ''
+            }
+        },
         loginSuccess: (state, action) => {
             state.userId = action.payload.userId
             state.username = action.payload.username

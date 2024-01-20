@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const http = require('http')
 const socketioHelper = require('./services/socket/socket')
 const cors = require('cors')
@@ -14,6 +15,7 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('dev'))
+app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true

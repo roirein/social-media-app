@@ -60,8 +60,8 @@ const loginUser = async (req, res, next) => {
         if (!user.isActive) {
             throw new HttpError('please activate your account by clicking on the confirmation link in your email', 401)
         }
-        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
-        const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '5m'})
+        const accessToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
+        const refreshToken = jwt.sign({_id: user._id, email: user.email}, process.env.JWT_REFRESH_TOKEN_SECRET, {expiresIn: req.body.rememberMe ? '365d' : '3h'})
         const maxAge = req.body.rememberMe ? 365 * 24 * 60 * 60 : 5 * 60
         res.setHeader('Set-Cookie', `refreshToken=${refreshToken}; HttpOnly; Max-Age=${maxAge}; Path=/; SameSite=None; Secure`)
         res.status(200).json({
@@ -139,7 +139,7 @@ const changePassword = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
     try {
-        res.setHeader('Set-Cookie', `refreshToken=''; HttpOnly; Max-Age=${new Date(0)}`)
+        res.setHeader('Set-Cookie', `refreshToken=''; HttpOnly; Max-Age=${new Date(0)}; Path=/; SameSite=None; Secure`)
         res.status(200).json({message: 'logged out successfully'})
     } catch(err) {
         next(err)
@@ -151,6 +151,7 @@ const generateNewAccessToken = async (req, res, next) => {
         const refreshToken = req.cookies['refreshToken']
         jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET, (err, decodedToken) => {
             if (err) {
+                console.log(err, refreshToken)
                 res.setHeader('Set-Cookie', `refreshToken=''; HttpOnly; Max-Age=${new Date(0)}`)
                 if (err.name === 'TokenExpiredError') {
                     throw new HttpError('token expired', 401)

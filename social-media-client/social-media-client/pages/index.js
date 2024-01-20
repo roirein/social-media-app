@@ -18,15 +18,7 @@ export default function Home() {
   const router = useRouter()
 
   const {token} = router.query
-  const [authOption, setAuthOption] = useState()
-
-  useEffect(() => {
-    if (token && token.length > 0) {
-      setAuthOption(AUTH_OPTION.PASSWORD_CHANGE)
-    } else {
-      setAuthOption(AUTH_OPTION.LOGIN)
-    }
-  }, [token])
+  const [authOption, setAuthOption] = useState(AUTH_OPTION.LOGIN)
 
   return (
     <AuthPageTemplate>

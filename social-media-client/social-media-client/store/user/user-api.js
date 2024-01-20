@@ -1,12 +1,27 @@
 import BaseApi from '@/utils/base-api'
 import store from '../index'
 import userSlice from './user-slice'
-import {errSelector, usernameSelector} from './user-selectors'
+import {errSelector, tokenSelector, userIdSelector, usernameSelector} from './user-selectors'
 
 class UserApi extends BaseApi {
 
     constructor() {
         super()
+    }
+
+    async register(registrationData) {
+        try {
+            const response = await this.makeApiRequest('auth/register', 'POST', registrationData) 
+            if (response.status === 201) {
+                store.dispatch(userSlice.actions.registerSuccess)
+            }
+        } catch (e) {
+            if (e.response) {
+                store.dispatch(userSlice.actions.loginFailure({
+                    errMessage: e.response.data.message
+                }))
+            }
+        }
     }
 
     async login(email, password) {
@@ -30,6 +45,21 @@ class UserApi extends BaseApi {
                 }))
             }
             throw e
+        }
+    }
+
+    async logout() {
+        try {
+            const response = await this.makeApiRequest('auth/logout', 'POST', null, {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+            })
+            if (response.status === 200) {
+                localStorage.removeItem('accessToken')
+            }
+        } catch (e) {
+            if (e.response) {
+                return 'something went wrong'
+            }
         }
     }
 
@@ -63,6 +93,14 @@ class UserApi extends BaseApi {
 
     getError(state) {
         return errSelector(state)
+    }
+
+    getUserId(state) {
+        return userIdSelector(state)
+    } 
+
+    getToken(state) {
+        return tokenSelector(state)
     }
     
 }

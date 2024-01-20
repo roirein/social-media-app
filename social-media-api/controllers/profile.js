@@ -15,9 +15,10 @@ const uploadProfileImage = async (req, res, next) => {
         if (profile[fieldName]) {
             deleteImage(profile[fieldName])
         }
-        profile[fieldName] = req.file.path
+
+        profile[fieldName] = req.file.filename
         await profile.save()
-        res.status(200).json({message: 'profile image uploaded successfully'})
+        res.status(200).json({imageUrl: `http://localhost:${process.env.PORT}/static/images/${req.file.filename}`})
     } catch(err) {
         next(err)
     }

@@ -1,10 +1,31 @@
+import userApi from "@/store/user/user-api"
 import { AccountCircle, Logout, Settings } from "@mui/icons-material"
 import { Menu, MenuItem, Stack, Typography, useTheme } from "@mui/material"
+import { useRouter } from "next/router"
+import { useSelector } from "react-redux"
 
 const AppHeaderMenu = (props) => {
 
     const theme = useTheme()
     const open = Boolean(props.anchorEl)
+    const router = useRouter()
+
+    const userId = useSelector((state) => userApi.getUserId(state))
+
+    const onClickItem = async (itemValue) => {
+        switch(itemValue) {
+            case 'logout': {
+                await userApi.logout()
+                router.push('/')
+            }
+            case 'profile': 
+                router.push(`/profile/${userId}`)
+            default: 
+                break
+        }
+
+        props.onClose()
+    }
 
     return (
         <Menu
@@ -34,7 +55,7 @@ const AppHeaderMenu = (props) => {
             <Stack
                 rowsGap={theme.spacing(4)}
             >
-                <MenuItem>
+                <MenuItem onClick={() => onClickItem('profile')}>
                     <Stack 
                         direction="row"
                         columnGap={theme.spacing(4)}
@@ -56,17 +77,17 @@ const AppHeaderMenu = (props) => {
                         </Typography>
                     </Stack>
                 </MenuItem>
-                    <MenuItem>
-                        <Stack 
-                            direction="row"
-                            columnGap={theme.spacing(4)}
-                        >
-                            <Logout fontSize="large" sx={{color: theme.palette.primary.light}}/>
-                            <Typography variant="h6" fontWeight="bold">
-                                Logout
-                            </Typography>
-                        </Stack>
-                    </MenuItem>
+                <MenuItem onClick={() => onClickItem('logout')}>
+                    <Stack 
+                        direction="row"
+                        columnGap={theme.spacing(4)}
+                    >
+                        <Logout fontSize="large" sx={{color: theme.palette.primary.light}}/>
+                        <Typography variant="h6" fontWeight="bold">
+                            Logout
+                        </Typography>
+                    </Stack>
+                </MenuItem>
             </Stack>
         </Menu>
     )

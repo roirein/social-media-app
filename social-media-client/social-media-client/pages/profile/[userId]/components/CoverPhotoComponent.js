@@ -3,13 +3,6 @@ import { Stack, Button, useTheme } from "@mui/material"
 import profileApi from "@/store/profile/profile-api"
 import { useSelector } from "react-redux"
 
-//next tasks:
-//1-add profile picture
-//2-finish profile page(user-data)
-//3-make sure profile page editable only if the page is for the logged in user
-//4-add following/followes functionality and pages
-//5-add notification functionality
-//6-add posts form
 const CoverPhotoComponent = () => {
 
     const imageUrl = useSelector(state => profileApi.getImage(state)) 

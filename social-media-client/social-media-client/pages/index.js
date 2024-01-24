@@ -22,9 +22,10 @@ export default function Home() {
 
   return (
     <AuthPageTemplate>
-      {authOption === AUTH_OPTION.LOGIN && <LoginForm onSwitchSignup={() => setAuthOption(AUTH_OPTION.REGISTER)} onForgotPassword={() => setAuthOption(AUTH_OPTION.PASSWORD_RESET)}/>}
+      {authOption === AUTH_OPTION.LOGIN && <LoginForm onSwitchSignup={() => setAuthOption(AUTH_OPTION.REGISTER)} onForgotPassword={() => setAuthOption(AUTH_OPTION.PASSWORD_RESET)} />}
+      {/* {authOption === AUTH_OPTION.LOGIN && <LoginForm onSwitchSignup={() => setAuthOption(AUTH_OPTION.REGISTER)} onForgotPassword={() => setAuthOption(AUTH_OPTION.PASSWORD_RESET)}/>}
       {authOption === AUTH_OPTION.REGISTER && <SignupForm onSwitchLogin={() => setAuthOption(AUTH_OPTION.LOGIN)}/>}
-      {authOption === AUTH_OPTION.PASSWORD_RESET && <PasswordResetForm onSwitchLogin={() => setAuthOption(AUTH_OPTION.LOGIN)}/>}
+      {authOption === AUTH_OPTION.PASSWORD_RESET && <PasswordResetForm onSwitchLogin={() => setAuthOption(AUTH_OPTION.LOGIN)}/>} */}
     </AuthPageTemplate>
   )
 }

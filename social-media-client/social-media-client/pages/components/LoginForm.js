@@ -10,10 +10,7 @@ import { useState } from "react";
 import {useRouter} from 'next/router'
 import userApi from "@/store/user/user-api";
 import { useSelector } from "react-redux";
-
-//nex tasks:
-//4 - start to work on the profile page, upload cover and image photoes
-//5 -add to profile page personal data(full name, location, work, birthday, bio, etc...)
+import TextLink from "@/components/UI/forms-input/TextLink";
 
 const validationSchema = yup.object({
     email: yup
@@ -57,7 +54,7 @@ const LoginForm = (props) => {
             <form
                 style={{
                     margin: '0 auto',
-                    width: '80%',
+                    width: '50%',
                     padding: '16px'
                 }}
                 onSubmit={methods.handleSubmit(onSubmit)}
@@ -67,7 +64,7 @@ const LoginForm = (props) => {
                     direction="column"
                     rowGap="24px"
                 >
-                    <Typography variant="h3" textAlign="center" sx={{mb: '16px'}} color={theme.palette.primary.light}>
+                    <Typography variant="h2" textAlign="center" sx={{mb: '16px'}} color={theme.palette.primary.light} fontWeight="bold">
                         Sign in
                     </Typography>
                     <TextInput
@@ -82,48 +79,34 @@ const LoginForm = (props) => {
                         name="password"
                         label="password"
                     />
-                    <FormControlLabel control={<Checkbox 
-                                    onChange={() => setRememberMe((prev) => !prev)} 
-                                    value={rememberMe}
-                                    sx={{
-                                        '&.Mui-checked': {
-                                          color: theme.palette.primary.light, // This is the color when the checkbox is checked
-                                        },
-                                    }}
-                                />} 
-                        label={<span style={{ fontSize: '16px' }}>Remember me</span>}  
-                    />
-                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
+                    <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                    >
+                        <FormControlLabel control={<Checkbox 
+                                        onChange={() => setRememberMe((prev) => !prev)} 
+                                        value={rememberMe}
+                                        sx={{
+                                            '&.Mui-checked': {
+                                            color: theme.palette.primary.light, // This is the color when the checkbox is checked
+                                            },
+                                        }}
+                                    />} 
+                            label={<span style={{ fontSize: '16px' }}>Remember me</span>}  
+                        />
+                        <TextLink
+                            message="Forgot Password?"
+                            onClick={props.onForgotPassword}
+                        />
+                    </Stack>
+                    <Button type="submit" variant="contained">
                         Sign in
                     </Button>
-                    <Typography textAlign="center" sx={{
-                            cursor: 'pointer',
-                            '&:hover': {
-                                color: theme.palette.primary.light,
-                                textDecoration: 'underline',
-                                fontWeight: 'bold'
-                            },
-                            position: 'relative',
-                            bottom: '8px'
-                        }} onClick={props.onSwitchSignup} variant="caption">
-                            Don't have an account yet? click here for creating one
-                    </Typography>
-                    <Typography 
-                            variant="caption"
-                            fontSize="18px"
-                            textAlign="center"
-                            sx={{
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    color: theme.palette.primary.light,
-                                    textDecoration: 'underline',
-                                    fontWeight: 'bold'
-                                },
-                            }}
-                            onClick={props.onForgotPassword}
-                        >
-                            Forgot Password?
-                    </Typography>
+                    <TextLink
+                        message="Don't have an account yet? click here for creating one"
+                        onClick={props.onSwitchSignup}
+                    />
                     {serverError && showError && (
                         <Typography color="red" textAlign="center">
                             {serverError}

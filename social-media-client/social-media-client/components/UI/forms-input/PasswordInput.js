@@ -19,7 +19,7 @@ const PasswordInput = (props) => {
                     {...field}
                     type={showPassword ? 'text' : 'password'}
                     label={props.label}
-                    variant="standard"
+                    variant="outlined"
                     InputProps={{
                         startAdornment: <Lock fontSize="large"/>,
                         endAdornment: <IconButton onClick={() => setShowPassword(!showPassword)}>
@@ -31,10 +31,14 @@ const PasswordInput = (props) => {
                     onBlur={() => clearErrors(props.name)}
                     sx={{
                         '& .MuiInput-underline:after': {
-                          borderBottomColor: theme.palette.primary.light,
+                          borderBottomColor: theme.palette.primary.main,
                         },
                         '& label.Mui-focused': {
-                            color: theme.palette.primary.light,
+                            color: theme.palette.primary.main,
+                        },
+                        '& label': {
+                            fontSize: '14px',
+                            fontWeight: 'bold'
                         }
                     }}
                 />

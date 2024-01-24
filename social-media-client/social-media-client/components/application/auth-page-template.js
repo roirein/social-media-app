@@ -10,58 +10,29 @@ const AuthPageTemplate = ({children}) => {
         <Box
             width="100%"
             minHeight="100vh"
-            sx={{
-            background: theme.palette.primary.main,
-            }}
             display="flex"
-            flexDirection="column"
+            flexDirection="row"
             alignItems='center'
             rowGap={theme.spacing(10)}
         >
             <Stack
-                direction="row"
-                sx={{
-                width:"100%",
-                justifyContent: 'center',
-                alignItems: 'center',
-                mt: theme.spacing(8)
-                }}
+                width="50%"
+                height="100vh"
+                justifyContent="center"
+                alignItems="center"
+                bgcolor={theme.palette.primary.main}
             >
-                <Typography variant="h2" fontWeight="bold" sx={{mb: theme.spacing(4)}} color={theme.palette.secondary.contrastText}>
-                    Moment Sphere
-                </Typography>
-                <Image src={logo} width={100} height={100}/>
+                <Image src={logo} width={500} height={500} />
+                <Typography variant="h1" fontWeight="bold">Moment Sphere</Typography>
             </Stack>
             <Stack
-                direction="row"
-                width="60rem"
-                minHeight="45vh"
-                sx={{
-                boxShadow: 2,
-                borderRadius: theme.spacing(4),
-                mt: theme.spacing(10)
-                }}
+                width="50%"
+                height="100vh"
+                bgcolor={theme.customPalette.primaryBackground.main}
+                justifyContent="center"
+                alignItems="center"
             >
-                <Stack
-                    width="50%"
-                    bgcolor={theme.palette.primary.light}
-                    sx={{
-                        borderTopLeftRadius: theme.spacing(4),
-                        borderBottomLeftRadius: theme.spacing(4)
-                    }}
-                    >
-            
-                </Stack>
-                <Stack
-                    width="50%"
-                    bgcolor={theme.palette.secondary.light}
-                    sx={{
-                        borderTopRightRadius: theme.spacing(4),
-                        borderBottomRightRadius: theme.spacing(4)
-                    }}
-                    >
-                        {children}
-                </Stack>
+                {children}
             </Stack>
         </Box>
     )

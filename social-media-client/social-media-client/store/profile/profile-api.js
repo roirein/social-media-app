@@ -2,7 +2,7 @@ import BaseApi from "@/utils/base-api";
 import { tokenSelector } from "../user/user-selectors";
 import store from '../index'
 import profileSlice from "./profile-slice";
-import { coverImageSelector } from "./profile-selectors";
+import { coverImageSelector, profileImageSelector } from "./profile-selectors";
 
 class ProfileApi extends BaseApi {
     constructor() {
@@ -23,8 +23,8 @@ class ProfileApi extends BaseApi {
         }
     }
 
-    getImage(state) {
-        return coverImageSelector(state)
+    getImage(state, imageType) {
+        return imageType === 'profile' ? profileImageSelector(state) : coverImageSelector(state)
     }
 }
 

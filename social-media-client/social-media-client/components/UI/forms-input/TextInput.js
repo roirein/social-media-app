@@ -15,17 +15,21 @@ const TextInput = (props) => {
                     {...field}
                     type={props.type}
                     label={props.label}
-                    variant="standard"
+                    variant="outlined"
                     InputProps={props.inputProps}
                     error={!!errors[props.name]}
                     helperText={errors[props.name] ? errors[props.name].message : ''}
                     onBlur={() => clearErrors(props.name)}
                     sx={{
                         '& .MuiInput-underline:after': {
-                          borderBottomColor: theme.palette.primary.light,
+                          borderBottomColor: theme.palette.primary.main,
                         },
                         '& label.Mui-focused': {
-                            color: theme.palette.primary.light,
+                            color: theme.palette.primary.main,
+                        },
+                        '& label': {
+                            fontSize: '14px',
+                            fontWeight: 'bold'
                         }
                     }}
                 />

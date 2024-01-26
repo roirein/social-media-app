@@ -11,6 +11,14 @@ const PasswordInput = (props) => {
     const [showPassword, setShowPassword] = useState(false)
     const theme = useTheme()
 
+    const getErrDeatils = (type) => {
+        if (type === 'password') {
+            return 'password must be 6 to 24 characters long, include lowercase and uppercase, number and a special character'
+        } else {
+            return 'confirm password must match password field'
+        }
+    }
+
     return (
         <Controller
             name={props.name}
@@ -28,7 +36,7 @@ const PasswordInput = (props) => {
                         </IconButton>
                     }}
                     error={!!errors[props.name]}
-                    helperText={errors[props.name] ? <FormError message={errors[props.name].message} details={'password must be 6 to 24 characters long, include lowercase and uppercase, number and a special character'} showTooltip/> : ''}
+                    helperText={errors[props.name] ? <FormError message={errors[props.name].message} details={getErrDeatils(props.name)} showTooltip/> : ''}
                     onBlur={() => clearErrors(props.name)}
                     sx={{
                         '& .MuiInput-underline:after': {

@@ -11,6 +11,8 @@ const TextInput = (props) => {
         switch(type) {
             case 'email': 
                 return 'email sould be in format example@example.com'
+            case 'username':
+                return 'username must be 3 characters long and include letters and/or numbers'
             default:
                 break
         }
@@ -28,7 +30,7 @@ const TextInput = (props) => {
                     variant="outlined"
                     InputProps={props.inputProps}
                     error={!!errors[props.name]}
-                    helperText={errors[props.name] ? <FormError message={errors[props.name].message} details={getErrDeatils(props.type)} showTooltip/> : ''}
+                    helperText={errors[props.name] ? <FormError message={errors[props.name].message} details={getErrDeatils(props.name)} showTooltip/> : ''}
                     onBlur={() => clearErrors(props.name)}
                     sx={{
                         '& .MuiInput-underline:after': {

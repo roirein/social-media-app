@@ -8,6 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import axios from 'axios'
 import { useState } from "react";
 import {useRouter} from 'next/router'
+import FormError from "@/components/UI/FormError";
 
 const validationSchema = yup.object({
     email: yup
@@ -81,27 +82,16 @@ const PasswordResetForm = (props) => {
                     <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
                         Reset Password
                     </Button>
-                    <Typography 
-                        variant="caption"
-                        fontSize="18px"
-                        textAlign="center"
-                        sx={{
-                            cursor: 'pointer',
-                            '&:hover': {
-                                color: theme.palette.primary.light,
-                                textDecoration: 'underline',
-                                fontWeight: 'bold'
-                            },
-                        }}
+                    <TextLink
+                        message="Back To Login"
                         onClick={props.onSwitchLogin}
-                    >
-                        Back To Login
-                    </Typography>
-                    {serverError && (
-                        <Typography color="red" textAlign="center">
-                            {serverError}
-                        </Typography>
+                    />
+                    {serverError && showError && (
+                        <Stack width="100%" alignItems="center">
+                            <FormError message={serverError}/>
+                        </Stack>
                     )}
+                    
                 </Stack>
             </form>
         </FormProvider>

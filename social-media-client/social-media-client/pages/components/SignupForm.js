@@ -8,6 +8,9 @@ import axios from 'axios'
 import TextInput from '@/components/UI/forms-input/TextInput'
 import PasswordInput from '@/components/UI/forms-input/PasswordInput'
 import userApi from '@/store/user/user-api'
+import { useSelector } from 'react-redux'
+import TextLink from '@/components/UI/forms-input/TextLink'
+import FormError from '@/components/UI/FormError'
 
 const validationSchema = yup.object({
     username: yup
@@ -70,13 +73,13 @@ const SignupForm = (props) => {
                 margin: '0 auto',
                 width: '80%',
                 padding: '16px'
-            }} onBlur={() => setServerError(null)}>
+            }} onBlur={() => setShowError(false)}>
                 <Stack
                     direction="column"
                     rowGap="24px"
                 >
                     <Typography variant="h3" textAlign="center" sx={{mb: '16px'}} color={theme.palette.primary.light}>
-                        Signup
+                        Join moment sphere today
                     </Typography>
                     <TextInput
                         name="username"
@@ -102,24 +105,18 @@ const SignupForm = (props) => {
                         name="confirmPassword"
                         label="confirm password"
                     />
-                    <Button type="submit" variant="contained" sx={{width: '50%', margin: '0 auto', backgroundColor: theme.palette.primary.light}}>
+                    <Button type="submit" variant="contained" sx={{borderRadius: theme.spacing(7)}}>
                         Signup
                     </Button>
                     {serverError && showError && (
-                        <Typography color="red" textAlign="center">
-                            {serverError}
-                        </Typography>
+                        <Stack width="100%" alignItems="center">
+                            <FormError message={serverError}/>
+                        </Stack>
                     )}
-                    <Typography textAlign="center" sx={{
-                        cursor: 'pointer',
-                        '&:hover': {
-                            color: theme.palette.primary.light,
-                            textDecoration: 'underline',
-                            fontWeight: 'bold'
-                        }
-                    }} onClick={props.onSwitchLogin}>
-                        Already have an account? click here to signin
-                    </Typography>
+                    <TextLink
+                        message="Already have an account? click here to sign in"
+                        onClick={props.onSwitchLogin}
+                    />
                 </Stack>
             </form>
         </FormProvider>

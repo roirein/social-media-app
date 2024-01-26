@@ -28,7 +28,7 @@ const AuthPageTemplate = ({children}) => {
             <Stack
                 width="50%"
                 height="100vh"
-                bgcolor={theme.customPalette.primaryBackground.main}
+                bgcolor={theme.palette.background.main}
                 justifyContent="center"
                 alignItems="center"
             >

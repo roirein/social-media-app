@@ -11,6 +11,7 @@ import {useRouter} from 'next/router'
 import userApi from "@/store/user/user-api";
 import { useSelector } from "react-redux";
 import TextLink from "@/components/UI/forms-input/TextLink";
+import FormError from "@/components/UI/FormError";
 
 const validationSchema = yup.object({
     email: yup
@@ -100,7 +101,7 @@ const LoginForm = (props) => {
                             onClick={props.onForgotPassword}
                         />
                     </Stack>
-                    <Button type="submit" variant="contained">
+                    <Button type="submit" variant="contained" sx={{borderRadius: theme.spacing(7)}}>
                         Sign in
                     </Button>
                     <TextLink
@@ -108,9 +109,9 @@ const LoginForm = (props) => {
                         onClick={props.onSwitchSignup}
                     />
                     {serverError && showError && (
-                        <Typography color="red" textAlign="center">
-                            {serverError}
-                        </Typography>
+                        <Stack width="100%" alignItems="center">
+                            <FormError message={serverError}/>
+                        </Stack>
                     )}
                 </Stack>
             </form>

@@ -3,6 +3,7 @@ import { IconButton, TextField, useField } from "@mui/material"
 import { Lock, Visibility, VisibilityOff } from "@mui/icons-material"
 import { useState } from "react"
 import { useTheme } from "@emotion/react"
+import FormError from "../FormError"
 
 const PasswordInput = (props) => {
     
@@ -27,7 +28,7 @@ const PasswordInput = (props) => {
                         </IconButton>
                     }}
                     error={!!errors[props.name]}
-                    helperText={errors[props.name] ? errors[props.name].message : ''}
+                    helperText={errors[props.name] ? <FormError message={errors[props.name].message} details={'password must be 6 to 24 characters long, include lowercase and uppercase, number and a special character'} showTooltip/> : ''}
                     onBlur={() => clearErrors(props.name)}
                     sx={{
                         '& .MuiInput-underline:after': {

@@ -6,12 +6,13 @@ const theme = createTheme({
             main: '#2de090'
         },
         secondary: {
-            main: '#e1ebe6',
-        }
-    },
-    customPalette: {
-        primaryBackground: {
-            main: '#FFFFFF'
+            main: '#42a4f5',
+        },
+        error: {
+            main: '#ba190d'
+        },
+        background: {
+            main: '#FFFFF'
         }
     },
     spacing: [0, 1, 2, 4, 8, 12, 16, 24, 32, 48, 64],

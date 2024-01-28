@@ -47,7 +47,7 @@ const AppHeaderMenu = (props) => {
                         boxShadow: 2,
                         width: '200px',
                         px: theme.spacing(5),
-                        bgcolor: theme.palette.primary.main
+                        bgcolor: theme.palette.secondaryBackground.main
                     }
                 }
             }}
@@ -60,7 +60,7 @@ const AppHeaderMenu = (props) => {
                         direction="row"
                         columnGap={theme.spacing(4)}
                     >
-                        <AccountCircle fontSize="large" sx={{color: theme.palette.primary.light}}/>
+                        <AccountCircle fontSize="large" sx={{color: theme.palette.grey[500]}}/>
                         <Typography variant="h6" fontWeight="bold">
                             Profile
                         </Typography>
@@ -71,7 +71,7 @@ const AppHeaderMenu = (props) => {
                         direction="row"
                         columnGap={theme.spacing(4)}
                     >
-                        <Settings fontSize="large" sx={{color: theme.palette.primary.light}}/>
+                        <Settings fontSize="large" sx={{color: theme.palette.grey[500]}}/>
                         <Typography variant="h6" fontWeight="bold">
                             Settings
                         </Typography>
@@ -82,7 +82,7 @@ const AppHeaderMenu = (props) => {
                         direction="row"
                         columnGap={theme.spacing(4)}
                     >
-                        <Logout fontSize="large" sx={{color: theme.palette.primary.light}}/>
+                        <Logout fontSize="large" sx={{color: theme.palette.grey[500]}}/>
                         <Typography variant="h6" fontWeight="bold">
                             Logout
                         </Typography>

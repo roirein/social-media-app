@@ -9,12 +9,13 @@ const {validationResult} = require('express-validator')
 
 const uploadProfileImage = async (req, res, next) => {
     try {
+        console.log(req.file)
         const profile = await Profile.findByUserId(req.user._id)
         const imageType = req.params.imageType
         const fieldName = imageType === 'profile' ? 'profileImageUrl' : 'coverImageUrl'
-        if (profile[fieldName]) {
-            deleteImage(profile[fieldName])
-        }
+        // if (profile[fieldName]) {
+        //     deleteImage(profile[fieldName])
+        // }
 
         profile[fieldName] = req.file.filename
         await profile.save()
@@ -56,11 +57,13 @@ const getProfile = async (req, res, next) => {
             throw new HttpError('profile not found', 404) 
         }
         const user = await User.findById(req.user._id, 'username')
-        const followingAmount = await Relation.find({following: req.params,userId}).countDocuments();
+        const followingAmount = await Relation.find({following: req.params.userId}).countDocuments();
         const followersAmount = await Relation.find({follower: req.params.userId}).countDocuments();
         res.status(200).json({
             profile: {
                 ...profile.toObject(),
+                coverImageUrl: `http://localhost:${process.env.PORT}/static/images/${profile.coverImageUrl}`,
+                profileImageUrl: `http://localhost:${process.env.PORT}/static/images/${profile.profileImageUrl}`,
                 username: user.username,
                 followingAmount,
                 followersAmount

@@ -6,6 +6,6 @@ export const usernameSelector = createSelector(userSelector, (user) => user?.use
 
 export const errSelector = createSelector(userSelector, (user) => user.errorMessage)
 
-export const userIdSelector = createSelector(userSelector, (user) => user.userId)
+export const userIdSelector = createSelector(userSelector, (user) => user?.userId)
 
 export const tokenSelector = createSelector(userSelector, (user) => user.token)

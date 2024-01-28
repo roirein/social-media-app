@@ -43,10 +43,13 @@ const LoginForm = (props) => {
 
     const onSubmit = async (data) => {
         try {
+            props.setIsLoading(true)
             await userApi.login(data.email, data.password)
+            props.setIsLoading(false)
             router.push('/feed')
         } catch (e) {
             setShowError(true)
+            props.setIsLoading(false)
         }
     }
 

@@ -4,58 +4,70 @@ import userApi from "@/store/user/user-api"
 import { useEffect } from "react"
 import { useRouter } from "next/router"
 import { useSelector } from "react-redux"
+import profileApi from "@/store/profile/profile-api"
+import { useLoading } from "@/components/UI/loading-spinner/loading-context"
+import LoadingSpinner from "@/components/UI/loading-spinner/LoadingSpinner"
 
 const AppTemplate = (props) => {
 
     const theme = useTheme()
     const router = useRouter()
-    const username = useSelector(state => userApi.getUsername(state))
+    const userId = useSelector(state => userApi.getUserId(state))
+    const {loading, setIsLoading} = useLoading()
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken')
-        if (token && !username) {
-            userApi.getUser(token).catch((e) => {
+
+        const getUserData = async () => {
+            const token = localStorage.getItem('accessToken')
+            if (token) {
+                setIsLoading(true)
+                const id = await userApi.getUser(token);
+                await profileApi.getProfile(localStorage.getItem('userId'))
+                setIsLoading(false)
+            } else {
                 router.push('/')
-            })
-        } else if (!token) {
-            router.push('/')
+            }
         }
+        getUserData()
     }, [])
 
     return (
-        <Box
-            border={`${theme.spacing(3)} solid ${theme.palette.primary.light}`}
-            width="100%"
-            minHeight="100vh"
-        >
-            <AppHeader/>
-            <Stack
+        <>
+            <LoadingSpinner open={loading}/>
+            <Box
+                border={`${theme.spacing(3)} solid ${theme.palette.primary.main}`}
                 width="100%"
-                direction="row"
-                sx={{pt: theme.spacing(8)}}
-                height="100vh"
+                minHeight="100vh"
             >
+                <AppHeader/>
                 <Stack
-                    width="30%"
-                    minHeight="100%"
+                    width="100%"
+                    direction="row"
+                    sx={{pt: theme.spacing(8)}}
+                    height="100vh"
                 >
+                    <Stack
+                        width="30%"
+                        minHeight="100%"
+                    >
 
-                </Stack>
-                <Stack
-                    width="40%"
-                    minHeight="100%"
-                    border={`${theme.spacing(2)} solid ${theme.palette.secondary.light}`}
-                >
-                    {props.children}
-                </Stack>
-                <Stack
-                    width="30%"
-                    minHeight="100%"
-                >
+                    </Stack>
+                    <Stack
+                        width="40%"
+                        minHeight="100%"
+                        border={`${theme.spacing(2)} solid ${theme.palette.secondary.light}`}
+                    >
+                        {props.children}
+                    </Stack>
+                    <Stack
+                        width="30%"
+                        minHeight="100%"
+                    >
 
+                    </Stack>
                 </Stack>
-            </Stack>
-        </Box>
+            </Box>
+        </>
     )
 }
 

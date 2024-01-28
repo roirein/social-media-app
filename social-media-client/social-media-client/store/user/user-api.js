@@ -69,6 +69,7 @@ class UserApi extends BaseApi {
                 Authorization: `Bearer ${token}`
             })
             if (response.status === 200) {
+                localStorage.setItem('userId', response.data._id)
                 if (!this.getUsername()) {
                     store.dispatch(userSlice.actions.loginSuccess({
                         userId: response.data._id,

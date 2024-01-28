@@ -20,6 +20,9 @@ const profileSlice = createSlice({
     name: 'profile',
     initialState,
     reducers: {
+        loadProfileSuccess(state, action) {
+            state.coverImage = action.payload.coverImage
+        },
         uploadCoverSuccess(state, action) {
             state.coverImage = action.payload.imageUrl
         }

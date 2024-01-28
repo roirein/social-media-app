@@ -29,7 +29,7 @@ const AppHeader = () => {
         <AppBar
             sx={{
                 height: '50px',
-                backgroundColor: theme.palette.primary.light
+                backgroundColor: theme.palette.primary.main
             }}
         >
             <Stack
@@ -55,8 +55,8 @@ const AppHeader = () => {
                         }}
                         onClick={onOpenMenu}
                     >
-                        <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
-                            <AccountCircle fontSize="large" sx={{color: theme.palette.secondary.light}}/>
+                        <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.main}}>
+                            <AccountCircle fontSize="large" sx={{color: theme.palette.background.main}}/>
                         </Avatar>
                         <Typography color={theme.palette.primary.contrastText} fontWeight="bold">
                             Hello, {username}
@@ -74,7 +74,7 @@ const AppHeader = () => {
                             startAdornment: <Search fontSize="large"/>,
                             sx: {
                                 height: '40px',
-                                bgcolor: theme.palette.secondary.light,
+                                bgcolor: theme.palette.background.main,
                                 mt: theme.spacing(3),
                                 borderRadius: theme.spacing(8)
                             }
@@ -92,11 +92,11 @@ const AppHeader = () => {
                     }}
                 >
                     <Image src={logo} width={40} height={40} style={{marginTop: '2px'}}/>
-                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
-                        <Notifications sx={{color: theme.palette.secondary.light}}/>
+                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.main}}>
+                        <Notifications sx={{color: theme.palette.background.main}}/>
                     </Avatar>
-                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.light}}>
-                        <Mail sx={{color: theme.palette.secondary.light}}/>
+                    <Avatar sx={{width: '40px', height: '40px', marginY: theme.spacing(3), backgroundColor: theme.palette.primary.main}}>
+                        <Mail sx={{color: theme.palette.background.main}}/>
                     </Avatar> 
                 </Stack>
             </Stack>

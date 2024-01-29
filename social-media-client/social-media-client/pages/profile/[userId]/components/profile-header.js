@@ -11,13 +11,14 @@ import userApi from "@/store/user/user-api";
 //display and editing data -TBD
 //differntiate between logged in user profile to other profile - done
 
-const ProfileHeaderComponent = () => {
+const ProfileHeaderComponent = (props) => {
 
     const theme = useTheme()
 
+    const {coverImage, profileImage, isCurrentUserProfile} = props
+
     const [profileImageUrl, setProfileImageUrl] = useState(null)
     const [hoverCoverPhoto, setIsHoverCoverPhoto] = useState(false);
-    const [isCurrentUserProfile, setIsCurrentUserProfile] = useState(false)
     const [coverImageUrl, setCoverImageUrl] = useState(null)
     const [imageToSend, setImageToSend] = useState(null)
     const [anchorEl, setAnchorEl] = useState(null);
@@ -25,20 +26,6 @@ const ProfileHeaderComponent = () => {
 
     const profileImageInputRef = useRef();
     const coverImageInputRef = useRef()
-
-    const router = useRouter();
-    const {userId} = router.query
-
-    const [profileData, setProfileData] = useState()
-
-    useEffect(() => {
-        profileApi.getProfile(router.query.userId).then(profile => {
-            setProfileData(profile)
-            if (userId === localStorage.getItem('userId')) {
-                setIsCurrentUserProfile(true)
-            }
-        })
-    }, [])
 
     const handleFileSelect = (e, imageType) => {
         console.log(e.target.files)
@@ -57,14 +44,10 @@ const ProfileHeaderComponent = () => {
     const handleImageUpload = async (imageType) => {
         const formData = new FormData()
         formData.append('profile', imageToSend)
-        const imageUrl = await profileApi.uploadImage(imageType, formData)
+        props.onUploadImage(imageType, formData)
         setCoverImageUrl(null)
         setProfileImageUrl(null)
         setImageToSend(null)
-        setProfileData({
-            ...profileData,
-            [imageType === 'profile' ? 'profileImageUrl' : 'coverImageUrl' ] : imageUrl
-        })
         setAnchorEl(null)
     }
 
@@ -77,7 +60,7 @@ const ProfileHeaderComponent = () => {
                 onMouseLeave={() => setIsHoverCoverPhoto(false)}
                 sx={{
                     backgroundColor: hoverCoverPhoto ? theme.palette.grey[100] : theme.palette.grey[200],
-                    backgroundImage : coverImageUrl ? `url(${coverImageUrl})` : `url(${profileData?.coverImageUrl})`,
+                    backgroundImage : coverImageUrl ? `url(${coverImageUrl})` : `url(${coverImage})`,
                     backgroundSize: 'cover'
                 }}
             >
@@ -145,7 +128,7 @@ const ProfileHeaderComponent = () => {
                 bgcolor="white"
             >
                 <input type="file" id="profileFileInput" style={{display: 'none'}} ref={profileImageInputRef} accept="image/*" onChange={(e) => handleFileSelect(e, 'profile')}/>
-                <Avatar sx={{width: '95%', height: '95%', mt: theme.spacing(8) + theme.spacing(3)}} src={profileImageUrl ? profileImageUrl : profileData?.profileImageUrl ? profileData?.profileImageUrl : '/no-profile.jpeg'}/>
+                <Avatar sx={{width: '95%', height: '95%', mt: theme.spacing(8) + theme.spacing(3)}} src={profileImageUrl ? profileImageUrl : profileImage ? profileImage : '/no-profile.jpeg'}/>
                 {!profileImageUrl && isCurrentUserProfile && (
                     <>
                         <IconButton

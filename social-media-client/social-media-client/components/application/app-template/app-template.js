@@ -21,8 +21,7 @@ const AppTemplate = (props) => {
             const token = localStorage.getItem('accessToken')
             if (token) {
                 setIsLoading(true)
-                const id = await userApi.getUser(token);
-                await profileApi.getProfile(localStorage.getItem('userId'))
+                await userApi.getUser(token);
                 setIsLoading(false)
             } else {
                 router.push('/')

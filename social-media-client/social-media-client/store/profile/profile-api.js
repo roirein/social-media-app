@@ -25,17 +25,13 @@ class ProfileApi extends BaseApi {
         }
     }
 
-    async getProfile(userId) {
+    async getProfile(url) {
         try {
-            const response = await this.makeApiRequest(`profile/profile/${userId}`, 'GET', null, {
+            console.log(url)
+            const response = await this.makeApiRequest(url, 'GET', null, {
                 'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             })
-            return response.data.profile
-            // if (response.status === 200 && userId === userApi.getUserId()) {
-            //     store.dispatch(profileSlice.actions.loadProfileSuccess({
-            //         coverImage: response.data.profile.coverImageUrl
-            //     }))
-            // }
+            return response.data
         } catch (e) {
             console.log(e)
         }

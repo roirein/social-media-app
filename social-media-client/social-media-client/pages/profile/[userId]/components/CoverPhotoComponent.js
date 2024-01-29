@@ -1,98 +1,78 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Stack, Button, useTheme } from "@mui/material"
-import profileApi from "@/store/profile/profile-api"
-import { useSelector } from "react-redux"
 
-const CoverPhotoComponent = () => {
+const CoverPhotoComponent = (props) => {
 
-    const imageUrl = useSelector(state => profileApi.getImage(state)) 
-
-    const [imageDataUrl, setImageDataUrl] = useState(null)
-    const [imageFile, setImageFile] = useState(null)
     const theme = useTheme()
-
-    const clickUploadImage = () => {
-        document.getElementById('fileInput').click()
-    }
-
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0]
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                setImageFile(file)
-                setImageDataUrl(ev.target.result)
-            }
-            reader.readAsDataURL(file)
-        }
-    }
-
-    const handleImageUpload = async () => {
-        const formData = new FormData()
-        formData.append('profile', imageFile)
-        await profileApi.uploadImage('cover', formData)
-        setImageDataUrl(null)
-        setImageFile(null)
-    }
+    const coverImageInputRef = useRef()
+    const [hoverCoverPhoto, setIsHoverCoverPhoto] = useState(false);
 
     return (
-        <Stack
-            width="100%"
-            height="25vh"
-            alignItems="flex-end"
-            justifyContent="flex-end"
-            sx={{
-                background: imageUrl ? `url(${imageUrl})` : (imageDataUrl ? `url(${imageDataUrl})` : theme.palette.primary.main),
-                backgroundSize: 'cover'
-            }}
-        >
-            <input type="file" id="fileInput" style={{display: 'none'}} accept="image/*" onChange={handleFileSelect}/>
-            {!imageFile && !imageUrl && (
-                <Button 
-                    variant="contained" 
-                    sx={{
-                        mb: theme.spacing(6), 
-                        mr: theme.spacing(6), 
-                        backgroundColor: theme.palette.primary.light
-                    }}
-                    onClick={clickUploadImage}
-                >
-                    Upload cover picture
-                </Button>
-            )}
-            {imageFile && (
-                <Stack
-                    direction="row"
-                    sx={{
-                        mb: theme.spacing(6), 
-                        mr: theme.spacing(6), 
-                    }}
-                    columnGap={theme.spacing(5)}
-                >
+        <>
+            <input type="file" id="fileInput" style={{display: 'none'}} accept="image/*" ref={coverImageInputRef} onChange={(e) => props.handleFileSelect(e, 'cover')}/>
+            <Stack 
+                height="25vh" 
+                onMouseEnter={() => setIsHoverCoverPhoto(true)}
+                onMouseLeave={() => setIsHoverCoverPhoto(false)}
+                sx={{
+                    backgroundColor: hoverCoverPhoto ? theme.palette.grey[100] : theme.palette.grey[200],
+                    backgroundImage : props.newImage ? `url(${props.newImage})` : `url(${props.currentImage})`,
+                    backgroundSize: 'cover'
+                }}
+            >
+                {hoverCoverPhoto && props.showUploadButton && (
                     <Button 
                         variant="contained" 
                         sx={{
+                            width: '217px',
+                            mt: 'auto', 
+                            ml: 'auto', 
+                            mr: theme.spacing(5),
+                            mb: theme.spacing(6),
                             backgroundColor: theme.palette.primary.light
                         }}
-                        onClick={handleImageUpload}
+                        onClick={() => coverImageInputRef.current.click()}
                     >
-                        Save
+                        Upload cover picture
                     </Button>
-                    <Button
-                        variant="contained" 
+                )}
+                {props.newImage && (
+                    <Stack
+                        direction="row"
                         sx={{
-                            backgroundColor: theme.palette.primary.light
+                            ml: 'auto',
+                            mt: 'auto',
+                            mr: theme.spacing(5),
+                            mb: theme.spacing(5)
                         }}
-                        onClick={() => {
-                            setImageFile(null)
-                            document.getElementById('fileInput').value = ''
-                        }}
+                        columnGap={theme.spacing(5)}
                     >
-                        Cancel
-                    </Button>
-                </Stack>
-            )}
-        </Stack>
+                        <Button 
+                            variant="contained" 
+                            sx={{
+                                backgroundColor: theme.palette.primary.main
+                            }}
+                            onClick={() => props.handleImageUpload('cover')}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variant="contained" 
+                            sx={{
+                                backgroundColor: theme.palette.primary.main
+                            }}
+                            onClick={() => {
+                                coverImageInputRef.current.value = ''
+                                props.onCancel()
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                    </Stack>
+                )}
+            </Stack>
+        
+        </>
     )
 }
 

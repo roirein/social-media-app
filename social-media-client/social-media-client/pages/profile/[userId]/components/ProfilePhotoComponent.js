@@ -54,7 +54,10 @@ const ProfilePhotoComponent = (props) => {
                             }
                         }}
                     >
-                        <MenuItem onClick={() => profileImageInputRef.current.click()}>
+                        <MenuItem onClick={() => {
+                            profileImageInputRef.current.click()
+                            setAnchorEl(null)
+                        }}>
                             Upload Profile Picture
                         </MenuItem>
                     </Menu>

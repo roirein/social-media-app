@@ -23,13 +23,9 @@ const ProfileHeaderComponent = (props) => {
     const [coverImageUrl, setCoverImageUrl] = useState(null)
     const [imageToSend, setImageToSend] = useState(null)
     const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
 
-    const profileImageInputRef = useRef();
-    const coverImageInputRef = useRef()
 
     const handleFileSelect = (e, imageType) => {
-        console.log(e.target.files)
         const file = e.target.files[0]
         if (file) {
             const reader = new FileReader();

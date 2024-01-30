@@ -31,7 +31,8 @@ const registerUser = async (req, res, next) => {
             user: user._id
         })
         const profile = new Profile({
-            userId: user._id
+            userId: user._id,
+            displayName: username
         })
         sendConfirmationEmail(email, confirmationToken)
         await user.save()

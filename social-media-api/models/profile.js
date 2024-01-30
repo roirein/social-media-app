@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 
 const profileSchema = new mongoose.Schema({
+    displayName: {
+        type: String,
+        required: true
+    },
     profileImageUrl: {
         type: String,
         unique: true

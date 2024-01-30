@@ -9,6 +9,7 @@ import profileApi from "@/store/profile/profile-api"
 import LoadingSpinner from "@/components/UI/loading-spinner/LoadingSpinner"
 import { useSelector } from "react-redux"
 import userApi from "@/store/user/user-api"
+import ProfileData from "./components/ProfileData"
 
 const ProfilePage = () => {
         
@@ -31,12 +32,16 @@ const ProfilePage = () => {
         mutate(`/profile/profile/${userId}`)
     }
 
+    const getDateString = () => {
+        return new Date(data?.profile?.joined).toLocaleString('en-US', {month: 'long', year: 'numeric'})
+    }
+
     return (
         <AppTemplate>
             <LoadingSpinner
-                open={!data && !error}
+                open={isLoading}
             />
-            {data && (
+            {!isLoading && (
                 <Stack
                     width="100%"
                     minHeight="100vh"
@@ -46,6 +51,12 @@ const ProfilePage = () => {
                         profileImage={data?.profile.profileImageUrl}
                         isCurrentUserProfile={loggedInUserId === userId}
                         onUploadImage={onUploadImage}
+                    />
+                    <ProfileData
+                        displayName={data?.profile?.displayName}
+                        username={data?.profile?.username}
+                        joined={getDateString()}
+                        isCurrentUserProfile={loggedInUserId}
                     />
                 </Stack>
             )}

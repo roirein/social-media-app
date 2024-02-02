@@ -8,11 +8,11 @@ const router = express.Router()
 
 router.patch('/image/:imageType', isAuth, upload.single('profile'), profileController.uploadProfileImage)
 
-router.put('/profile', isAuth, [
-    body('birthday').optional({values: 'falsy'}).isDate().isBefore(new Date().toISOString()),
-    body('firstName').optional({values: 'falsy'}).trim().isAlpha().isLength({min: 2}),
-    body('lastName').optional({values: 'falsy'}).trim().isAlpha().isLength({min: 2}),
-    body('bio').trim().optional({values: 'falsy'}).isLength({max: 128})
+router.put('/profile/:userId', isAuth, [
+    body('displayName').optional({values: 'falsy'}).trim(),
+    body('location').optional({values: 'falsy'}).trim().isLength({min: 2}),
+    body('job').optional({values: 'falsy'}).trim().isLength({min: 2}),
+    body('bio').trim().optional({values: 'falsy'}).isLength({max: 256})
 ], profileController.updateProfile)
 
 router.get('/profile/:userId', isAuth, profileController.getProfile)

@@ -17,21 +17,18 @@ const profileSchema = new mongoose.Schema({
         type: Date,
         default: new Date()
     },
-    birthday: {
-        type: Date
-    },
-    firstName: {
+    job: {
         type: String,
-        minLength: 2
+        minLength: 3
     },
-    lastName: {
+    location: {
         type: String,
-        minLength: 2
+        minLength: 5
     },
     bio: {
         type: String,
         minLength: 5,
-        maxLength: 128
+        maxLength: 256
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,

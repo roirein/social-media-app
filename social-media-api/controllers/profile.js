@@ -29,15 +29,18 @@ const updateProfile = async (req, res, next) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
+            console.log(errors)
             throw new HttpError('one or more inputs are invalid', 400)
         }
-        if (req.userId !== req.params.userId) {
+        console.log(req.user._id, req.params.userId)
+        if (req.user._id.toString() !== req.params.userId) {
             throw new HttpError('you cannot edit someone else profile', 403)
         }
         const profile = await Profile.findByUserId(req.user._id)
         if (!profile) {
             throw new HttpError('profile not found', 404)
         }
+        console.log(req.body)
         Object.keys(req.body).forEach(key => {
             profile[key] = req.body[key]
         })

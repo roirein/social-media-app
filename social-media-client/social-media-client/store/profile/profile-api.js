@@ -37,6 +37,18 @@ class ProfileApi extends BaseApi {
         }
     }
 
+    async editProfile(url, data) {
+        try {
+            const response = await this.makeApiRequest(url, 'PUT', data, {
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+            })
+
+            return response.data
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
     // async retriveProfile(userId) {
     //     if (userId === userApi.getUserId()) { peformance improvement for later
 

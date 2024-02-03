@@ -17,6 +17,6 @@ router.put('/profile/:userId', isAuth, [
 
 router.get('/profile/:userId', isAuth, profileController.getProfile)
 
-router.post('/follow', isAuth, profileController.followUser)
+router.post('/friend-request', isAuth, profileController.sendFriendRequest)
 
 module.exports = router

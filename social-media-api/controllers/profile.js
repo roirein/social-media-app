@@ -1,6 +1,7 @@
 const Notification = require('../models/notification')
 const Profile = require('../models/profile')
 const Relation = require('../models/relation')
+const Request = require('../models/request')
 const User = require('../models/user')
 const socketioHelper = require('../services/socket/socket')
 const HttpError = require('../utils/classes/http-error')
@@ -77,31 +78,31 @@ const getProfile = async (req, res, next) => {
     }
 }
 
-const followUser = async (req, res, next) => {
+const sendFriendRequest = async (req, res, next) => {
     try {
         const isRelationExist = await Relation.findOne({follower: req.userId, following: req.body.following})
         if (isRelationExist) {
-            throw new HttpError('you already follow that user', 409)
+            throw new HttpError('you already a friend of that user', 409)
         }
         if (req.user._id === req.body.following) {
-            throw new HttpError('you cannot follow yourself', 400)
+            throw new HttpError('you cannot be a friend of yourself', 400)
         }
-        const relation = new Relation({
-            follower: req.user._id,
-            following: req.body.following
+        const request = new Request({
+            requester: req.user._id,
+            reciever: req.body.following
         })
         const notification = new Notification({
             recipient: req.body.following,
-            message: `${req.user.username} started following you`,
-            trigger: 'new-follower'
+            message: `${req.user.username} sent you a friend request`,
+            trigger: 'friend-request'
         })
         await notification.save()
         const io = socketioHelper.getIo()
         if (io) {
-            io.to(req.body.following).emit('new-follower', notification)
+            io.to(req.body.following).emit('friend-request', notification)
         }
-        await relation.save()
-        res.status(201).json({message: 'followed successfully'})
+        await request.save()
+        res.status(201).json({message: 'friend request sent successfully'})
     } catch(err) {
         next(err)
     }
